@@ -1,0 +1,10 @@
+#ifndef FREEPOISSON_CLIENT_DISPLAYHANDLER_H
+#define FREEPOISSON_CLIENT_DISPLAYHANDLER_H
+
+
+class DisplayHandler {
+// TODO - Complete this class basis
+};
+
+
+#endif //FREEPOISSON_CLIENT_DISPLAYHANDLER_H

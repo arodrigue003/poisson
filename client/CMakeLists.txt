@@ -3,5 +3,17 @@ project(freepoisson_client)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES
+        src/main.cpp
+        src/input/InputHandler.cpp
+        src/input/InputHandler.h
+        src/display/DisplayHandler.cpp
+        src/display/DisplayHandler.h
+        src/config/ConfigHandler.cpp
+        src/config/ConfigHandler.h
+        src/model/ModelHandler.cpp
+        src/model/ModelHandler.h src/network/NetworkHandler.cpp src/network/NetworkHandler.h)
+
+include_directories(src)
+
 add_executable(freepoisson_client ${SOURCE_FILES})
