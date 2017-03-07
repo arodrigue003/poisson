@@ -18,7 +18,6 @@ int add_fish(struct fish fish, struct aquarium* aquarium);
 
 int del_fish(char* fish_name, struct aquarium* aquarium);
 
-
 int start_fish(char* fish_name);
 
 struct fish* get_fishes(struct aquarium* aquarium);

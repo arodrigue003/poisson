@@ -5,8 +5,10 @@
 #ifndef FREE_POISSON_CONTROLLER_H
 #define FREE_POISSON_CONTROLLER_H
 
-#include "aquarium.h"
 #include "netinet/in.h"
+
+#include "aquarium.h"
+#include "client.h"
 
 /***** These values have to be loaded from cfg files *****/
 #define CONTROLLER_PORT 12345
@@ -20,12 +22,6 @@
 
 #define BUFF_SIZE 1024
 
-struct client {
-    int sock;
-    struct sockaddr_in sin;
-    socklen_t sin_len;
-};
-
 struct controller {
     int listen_sock;
     struct client clients[MAX_CLIENT];
@@ -38,13 +34,14 @@ struct controller {
     struct aquarium aquarium;
 };
 
-void init_controller(struct controller* controller);
-
-void handle_input(struct controller* controller);
-
-void handle_new_client(struct controller* controller);
-
-void close_connections(struct controller* controller);
+static void app(void);
+static int init_connection(void);
+static void end_connection(int sock);
+static int read_client(int sock, char *buffer);
+static void write_client(int sock, const char *buffer);
+static void send_message_to_all_clients(struct client *clients, struct client client, int actual, const char *buffer, char from_server);
+static void remove_client(struct client *clients, int to_remove, int *actual);
+static void clear_clients(struct client *clients, int actual);
 
 
 #endif //FREE_POISSON_CONTROLLER_H
