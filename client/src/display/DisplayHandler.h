@@ -1,6 +1,8 @@
 #ifndef FREEPOISSON_CLIENT_DISPLAYHANDLER_H
 #define FREEPOISSON_CLIENT_DISPLAYHANDLER_H
 
+#include <iostream>
+#include <sstream>
 
 class ModelHandler;
 
@@ -9,6 +11,8 @@ class DisplayHandler {
 
 private:
     ModelHandler* _model;
+    bool _commandMode;
+    std::string _input;
 
 public:
     DisplayHandler(ModelHandler* model);
