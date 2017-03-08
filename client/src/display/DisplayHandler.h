@@ -12,6 +12,7 @@ private:
 
 public:
     DisplayHandler(ModelHandler* model);
+    void launch();
 };
 
 

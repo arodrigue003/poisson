@@ -20,5 +20,7 @@ int main() {
     // TODO Implement global logic by calling handler primitives
     std::cout << "Handlers are fully initialized!" << std::endl;
 
+    display.launch();
+
     return 0;
 }
