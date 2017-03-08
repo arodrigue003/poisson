@@ -35,12 +35,12 @@ void NetworkHandler::connect(std::string address, unsigned short port) {
 
     std::cout << "Data sending succeeded" << std::endl;
 
-    /*char buffer[100];
+    char buffer[100];
     std::size_t bytes_received;
     if (socket.receive(buffer, 100, bytes_received) != sf::Socket::Done) {
         std::cerr << "Error while receiving" << std::endl;
     }
 
     std::cout << "Received:" << std::endl
-              << "\t> " << buffer << std::endl;*/
+              << "\t> " << buffer << std::endl;
 }
