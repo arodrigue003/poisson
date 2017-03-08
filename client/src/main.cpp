@@ -1,5 +1,4 @@
 #include <iostream>
-#include <thread>
 
 #include "model/ModelHandler.h"
 #include "display/DisplayHandler.h"
@@ -17,12 +16,9 @@ int main() {
     InputHandler input(&model, &network);
     ConfigHandler config(&model, &network);
 
-
     // Start of logic
     // TODO Implement global logic by calling handler primitives
     std::cout << "Handlers are fully initialized!" << std::endl;
-
-    network.connect("127.0.0.1", 12345);
 
     display.launch();
 

@@ -39,7 +39,7 @@ static int init_connection(void);
 static void end_connection(int sock);
 static int read_client(int sock, char *buffer);
 static void write_client(int sock, const char *buffer);
-static void send_message_to_all_clients(struct client *clients, struct client client, int actual, const char *buffer, char from_server);
+static void send_message_to_all_clients(struct client *clients, int client_number, const char *buffer);
 static void remove_client(struct client *clients, int to_remove, int *actual);
 static void clear_clients(struct client *clients, int actual);
 

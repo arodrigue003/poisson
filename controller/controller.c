@@ -81,14 +81,12 @@ static void app(void)
                         printf("Client %d disconnected\n", i);
                         close(controller.clients[i].sock);
                         remove_client(controller.clients, i, &controller.client_number);
-                        //strncpy(controller.buff, itoa(i), BUFF_SIZE - 1);
-                        //strncat(controller.buff, " disconnected !", BUFF_SIZE - strlen(controller.buff) - 1);
-                        send_message_to_all_clients(controller.clients, client, controller.client_number, controller.buff, 1);
                     }
                     else
                     {
-                        printf("received message from client %d : %s\n", i, controller.buff);
-                        send_message_to_all_clients(controller.clients, client, controller.client_number, controller.buff, 0);
+                        printf("Received message from client %d : %s\n", i, controller.buff);
+                        write_client(client.sock, controller.buff);
+                        // send_message_to_all_clients(controller.clients, controller.client_number, controller.buff);
                     }
                     break;
                 }
@@ -117,24 +115,15 @@ static void remove_client(struct client *clients, int to_remove, int *client_num
     (*client_number)--;
 }
 
-static void send_message_to_all_clients(struct client *clients, struct client sender, int client_number, const char *buffer, char from_server)
+static void send_message_to_all_clients(struct client *clients, int client_number, const char *buffer)
 {
     int i = 0;
     char message[BUFF_SIZE];
     message[0] = 0;
     for(i = 0; i < client_number; i++)
     {
-        /* we don't send message to the sender */
-        if(sender.sock != clients[i].sock)
-        {
-            if(from_server == 0)
-            {
-                //strncpy(message, sender.name, BUF_SIZE - 1);
-                //strncat(message, " : ", sizeof message - strlen(message) - 1);
-            }
-            strncat(message, buffer, sizeof message - strlen(message) - 1);
-            write_client(clients[i].sock, message);
-        }
+        strncat(message, buffer, sizeof message - strlen(message) - 1);
+        write_client(clients[i].sock, message);
     }
 }
 

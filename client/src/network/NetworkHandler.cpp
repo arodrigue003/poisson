@@ -6,9 +6,18 @@
 #include "model/ModelHandler.h"
 
 NetworkHandler::NetworkHandler(ModelHandler *model) :
-    _model(model)
+    _model(model),
+    _thread(&NetworkHandler::launch, this)
 {
 
+}
+
+NetworkHandler::~NetworkHandler() {
+    _thread.join();
+}
+
+void NetworkHandler::launch() {
+    this->connect("127.0.0.1", 12345);
 }
 
 void NetworkHandler::connect(std::string address, unsigned short port) {
