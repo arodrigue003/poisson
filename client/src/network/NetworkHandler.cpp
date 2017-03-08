@@ -1,10 +1,12 @@
-#include "NetworkHandler.h"
-#include "display/DisplayHandler.h"
+
 #include <SFML/Network.hpp>
 #include <iostream>
 
-NetworkHandler::NetworkHandler(DisplayHandler *display) :
-    _display(display)
+#include "NetworkHandler.h"
+#include "model/ModelHandler.h"
+
+NetworkHandler::NetworkHandler(ModelHandler *model) :
+    _model(model)
 {
 
 }
@@ -23,4 +25,13 @@ void NetworkHandler::connect(std::string address, unsigned short port) {
     }
 
     std::cout << "Data sending succeeded" << std::endl;
+
+    char buffer[100];
+    std::size_t bytes_received;
+    if (socket.receive(buffer, 100, bytes_received) != sf::Socket::Done) {
+        std::cerr << "Error while receiving" << std::endl;
+    }
+
+    std::cout << "Received:" << std::endl
+              << "\t> " << buffer << std::endl;
 }

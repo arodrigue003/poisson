@@ -6,12 +6,8 @@ class NetworkHandler;
 
 class ModelHandler {
 // TODO - Complete this class basis
-
-private:
-    NetworkHandler* _network;
-
 public:
-    ModelHandler(NetworkHandler* network);
+    ModelHandler();
 };
 
 

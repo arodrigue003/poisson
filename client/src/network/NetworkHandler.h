@@ -3,16 +3,16 @@
 
 #include <string>
 
-class DisplayHandler;
+class ModelHandler;
 
 class NetworkHandler {
 // TODO - Complete this class basis
 
 private:
-    DisplayHandler* _display;
+    ModelHandler* _model;
 
 public:
-    NetworkHandler(DisplayHandler* display);
+    NetworkHandler(ModelHandler* model);
 
     void connect(std::string address, unsigned short port);
 };

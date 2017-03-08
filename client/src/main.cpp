@@ -9,9 +9,10 @@
 int main() {
 
     // Creation of handlers
-    DisplayHandler display;
-    NetworkHandler network(&display);
-    ModelHandler model(&network);
+
+    ModelHandler model;
+    DisplayHandler display(&model);
+    NetworkHandler network(&model);
     InputHandler input(&model, &network);
     ConfigHandler config(&model, &network);
 
