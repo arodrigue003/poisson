@@ -24,11 +24,13 @@ void DisplayHandler::launch() {
     sf::Text inputText;
     inputText.setFont(font);
     inputText.setString("");
-    inputText.setCharacterSize(24);
-    inputText.setFillColor(sf::Color::Red);
+    inputText.setCharacterSize(16);
+    inputText.setFillColor(sf::Color::White);
 
     //window creation
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Vue : ");
+    int width = 800;
+    int height = 600;
+    sf::RenderWindow window(sf::VideoMode(width, height), "Vue : ");
     window.setVerticalSyncEnabled(true);
 
     //main loop
@@ -62,7 +64,7 @@ void DisplayHandler::launch() {
                     // find if we need to execute command input functionnality or not
                     if (_commandMode) {
                         if (event.key.code == sf::Keyboard::Return) {
-                            //send the command to the server
+                            //TODO : send the command to the server
                             std::cout << _input << std::endl;
                             _input.clear();
                             //update the visual text
@@ -72,7 +74,12 @@ void DisplayHandler::launch() {
                             _input.pop_back();
                         //update the visual text
                         inputText.setString("> " + _input);
+
                     } else {
+                        if (event.key.code == sf::Keyboard::Q) {
+                            window.close();
+                            //TODO : call exit to the model
+                        }
 
                     }
 
@@ -84,6 +91,20 @@ void DisplayHandler::launch() {
                         else
                             inputText.setString("");
                     }
+                    break;
+
+                    //resize event
+                case sf::Event::Resized: {
+                    int newWidth = event.size.width;
+                    int newHeight = event.size.height;
+                    /*if (height != newHeight || width != newWidth) {
+                        width = newWidth;
+                        height = newHeight;
+                        window.create(sf::VideoMode(width, height), "Vue : ");
+                    }*/
+                    std::cout << "new width: " << event.size.width << std::endl;
+                    std::cout << "new height: " << event.size.height << std::endl;
+                }
                     break;
 
                 default:

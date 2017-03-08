@@ -13,6 +13,8 @@ private:
     ModelHandler* _model;
     bool _commandMode;
     std::string _input;
+    static constexpr const char * _help = "q   : quit\n"
+                                          "ESC : enter and exit the command mode";
 
 public:
     DisplayHandler(ModelHandler* model);
