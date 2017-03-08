@@ -1,3 +1,5 @@
+#include <SFML/Graphics.hpp>
+
 #include "DisplayHandler.h"
 
 
@@ -8,4 +10,7 @@ DisplayHandler::DisplayHandler(ModelHandler *model) :
 
 }
 
-void
+void DisplayHandler::launch() {
+    //window creation
+
+}
