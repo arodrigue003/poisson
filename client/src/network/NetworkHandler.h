@@ -1,6 +1,7 @@
 #ifndef FREEPOISSON_CLIENT_NETWORKHANDLER_H
 #define FREEPOISSON_CLIENT_NETWORKHANDLER_H
 
+#include <string>
 
 class DisplayHandler;
 
@@ -12,6 +13,8 @@ private:
 
 public:
     NetworkHandler(DisplayHandler* display);
+
+    void connect(std::string address, unsigned short port);
 };
 
 

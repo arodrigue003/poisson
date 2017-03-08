@@ -17,3 +17,8 @@ set(SOURCE_FILES
 include_directories(src)
 
 add_executable(freepoisson_client ${SOURCE_FILES})
+add_executable(sfmltest src/sfmltest.cpp)
+
+target_link_libraries(freepoisson_client sfml-network sfml-system)
+
+target_link_libraries(sfmltest sfml-graphics sfml-window sfml-system)
