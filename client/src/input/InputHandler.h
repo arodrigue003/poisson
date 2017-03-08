@@ -14,6 +14,8 @@ private:
 
 public:
     InputHandler(ModelHandler* model, NetworkHandler* network);
+
+
 };
 
 
