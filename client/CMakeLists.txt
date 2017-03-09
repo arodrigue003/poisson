@@ -4,7 +4,7 @@ project(freepoisson_client)
 add_subdirectory(fonts)
 add_subdirectory(textures)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -O0 -g")
 
 set(SOURCE_FILES
         src/main.cpp
@@ -15,7 +15,7 @@ set(SOURCE_FILES
         src/config/ConfigHandler.cpp
         src/config/ConfigHandler.h
         src/model/ModelHandler.cpp
-        src/model/ModelHandler.h src/network/NetworkHandler.cpp src/network/NetworkHandler.h)
+        src/model/ModelHandler.h src/network/NetworkHandler.cpp src/network/NetworkHandler.h src/display/ScrollableOutput.cpp src/display/ScrollableOutput.hpp)
 
 include_directories(src)
 

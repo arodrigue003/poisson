@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "DisplayHandler.h"
+#include "ScrollableOutput.hpp"
 
 
 DisplayHandler::DisplayHandler(ModelHandler *model) :
@@ -14,7 +15,7 @@ void DisplayHandler::launch() {
 
     //Font importation
     sf::Font font;
-    if (!font.loadFromFile("fonts/SourceCodePro-Black.ttf")) {
+    if (!font.loadFromFile("fonts/SourceCodePro-Regular.ttf")) {
         std::cerr << "Could not load the font!" << std::endl << "Exiting..." << std::endl;
         //TODO : call exit to the model
         return;
@@ -54,6 +55,8 @@ void DisplayHandler::launch() {
     sf::RenderWindow window(sf::VideoMode(width, height), "Vue : ");
     window.setVerticalSyncEnabled(true);
 
+    ScrollableOutput output(window, font);
+
     //main loop
     sf::Clock clock;
     while (window.isOpen()) {
@@ -85,15 +88,34 @@ void DisplayHandler::launch() {
 
                     // find if we need to execute command input functionality or not
                     if (_commandMode) {
-                        if (event.key.code == sf::Keyboard::Return) {
-                            //TODO : send the command to the server
-                            std::cout << _input << std::endl;
-                            _input.clear();
-                            //update the visual text
-                            inputText.setString("> " + _input);
-                        } else if (event.key.code == sf::Keyboard::BackSpace && _input.size() > 0)
-                            //erase last character of the command if command is not empty
-                            _input.pop_back();
+
+                        switch (event.key.code) {
+
+
+                            case sf::Keyboard::Return:
+                                //TODO : send the command to the server
+                                std::cout << _input << std::endl;
+                                _input.clear();
+                                //update the visual text
+                                inputText.setString("> " + _input);
+                                break;
+
+                            case sf::Keyboard::BackSpace:
+                                if (_input.size() > 0)
+                                    //erase last character of the command if command is not empty
+                                    _input.pop_back();
+                                break;
+
+                            case sf::Keyboard::Down:
+                                output.scroll(1);
+                                break;
+
+                            case sf::Keyboard::Up:
+                                output.scroll(-1);
+                                break;
+
+                        }
+
                         //update the visual text
                         inputText.setString("> " + _input);
 
@@ -150,14 +172,14 @@ void DisplayHandler::launch() {
                             case sf::Keyboard::Numpad4: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
                                 window.setPosition(sf::Vector2i(12, 50));
-                                window.setSize(sf::Vector2u(desktop.width/2 - 12, desktop.height - 100));
+                                window.setSize(sf::Vector2u(desktop.width / 2 - 12, desktop.height - 100));
                             }
                                 break;
 
                             case sf::Keyboard::Numpad6: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-                                window.setPosition(sf::Vector2i(desktop.width/2, 50));
-                                window.setSize(sf::Vector2u(desktop.width/2 - 12, desktop.height - 100));
+                                window.setPosition(sf::Vector2i(desktop.width / 2, 50));
+                                window.setSize(sf::Vector2u(desktop.width / 2 - 12, desktop.height - 100));
                             }
                                 break;
 
@@ -167,12 +189,22 @@ void DisplayHandler::launch() {
                                 //TODO : call exit to the model
                                 break;
 
+                            case sf::Keyboard::H:
+                                output.setString(_help);
+                                _commandMode = true;
+                                inputText.setString("> ");
+                                _input = "";
+                                break;
+
+                            default:
+                                break;
                         }
 
                     }
 
                     if (event.key.code == sf::Keyboard::Escape) {
                         _commandMode = !_commandMode;
+                        output.setString("");
                         //add the > chevron to show we are in input mode or remove it
                         if (_commandMode)
                             inputText.setString("> ");
@@ -180,6 +212,14 @@ void DisplayHandler::launch() {
                             inputText.setString("");
                     }
                     break;
+
+                    //mouse scroll event
+                case sf::Event::MouseWheelScrolled:
+                std::cout << "scroll : " << event.mouseWheelScroll.delta << std::endl;
+                    if (_commandMode)
+                        output.scroll(- (int) event.mouseWheelScroll.delta);
+                    break;
+
 
                     //resize event
                 case sf::Event::Resized: {
@@ -194,6 +234,7 @@ void DisplayHandler::launch() {
                     fps.setPosition(window.getSize().x - 70, 5);
                     backgroundSprite.setScale(width / (float) backgroundTexture.getSize().x,
                                               height / (float) backgroundTexture.getSize().y);
+                    output.update();
                 }
                     break;
 
@@ -215,6 +256,7 @@ void DisplayHandler::launch() {
         if (_commandMode) {
             window.draw(inputRect);
             window.draw(inputText);
+            output.draw();
         }
         window.display();
 
