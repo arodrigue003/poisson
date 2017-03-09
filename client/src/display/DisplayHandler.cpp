@@ -130,7 +130,7 @@ void DisplayHandler::launch() {
 
                         switch (event.key.code) {
 
-                            //postionning window part (4 split)
+                            //portioning window part (4 split)
                             case sf::Keyboard::Numpad7: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
                                 window.setSize(sf::Vector2u(desktop.width / 2 - 12, desktop.height / 2 - 50));
@@ -159,7 +159,7 @@ void DisplayHandler::launch() {
                             }
                                 break;
 
-                                //postionning window part (2 vertical)
+                                //portioning window part (2 vertical)
                             case sf::Keyboard::Numpad8: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
                                 window.setSize(sf::Vector2u(desktop.width - 24, desktop.height / 2 - 50));
@@ -174,7 +174,7 @@ void DisplayHandler::launch() {
                             }
                                 break;
 
-                                //postionning window part (2 horizontal)
+                                //portioning window part (2 horizontal)
                             case sf::Keyboard::Numpad4: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
                                 window.setSize(sf::Vector2u(desktop.width / 2 - 12, desktop.height - 100));
