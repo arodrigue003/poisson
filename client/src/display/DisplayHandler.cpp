@@ -55,8 +55,8 @@ void DisplayHandler::launch() {
     sf::Sprite backgroundSprite(backgroundTexture);
 
     //window creation
-    unsigned width = 800;
-    unsigned height = 600;
+    unsigned width = 1000;
+    unsigned height = 560;
     sf::RenderWindow window(sf::VideoMode(width, height), "Vue : ");
     window.setVerticalSyncEnabled(true);
 
@@ -221,7 +221,6 @@ void DisplayHandler::launch() {
 
                     //mouse scroll event
                 case sf::Event::MouseWheelScrolled:
-                std::cout << "scroll : " << event.mouseWheelScroll.delta << std::endl;
                     if (_commandMode)
                         output.scroll(- (int) event.mouseWheelScroll.delta);
                     break;
@@ -241,6 +240,8 @@ void DisplayHandler::launch() {
                     backgroundSprite.setScale(width / (float) backgroundTexture.getSize().x,
                                               height / (float) backgroundTexture.getSize().y);
                     output.update();
+
+                    std::cout << width<< ":" << height << std::endl;
                 }
                     break;
 

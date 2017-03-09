@@ -52,10 +52,21 @@ void NetworkHandler::init(ModelHandler &model) {
 
 void NetworkHandler::launch(std::string address, unsigned short port) {
     _is_active = true;
-    sf::Socket::Status status = _socket.connect(address, port);
 
-    if (status != sf::Socket::Done) {
-        std::cerr << "Error while connection" << std::endl;
+    bool connectionSuccess = false;
+    std::chrono::milliseconds timespan(10000);
+
+    while (!connectionSuccess) {
+        sf::Socket::Status status = _socket.connect(address, port);
+
+        if (status != sf::Socket::Done) {
+            std::cerr << "Error while connecting" << std::endl;
+            std::cerr << "Trying again in 10 secondes" << std::endl;
+        }
+        else
+            connectionSuccess = true;
+
+        std::this_thread::sleep_for(timespan);
     }
 
     _send_thread = std::thread(&NetworkHandler::_send_routine, this);
