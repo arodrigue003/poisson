@@ -17,7 +17,9 @@ private:
                                           "ESC : enter and exit the command mode";
 
 public:
-    DisplayHandler(ModelHandler* model);
+    DisplayHandler();
+
+    void init(ModelHandler& model);
     void launch();
 };
 

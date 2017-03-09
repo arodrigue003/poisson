@@ -3,11 +3,17 @@
 #include <SFML/Graphics.hpp>
 
 #include "DisplayHandler.h"
+#include <model/ModelHandler.h>
 
 
-DisplayHandler::DisplayHandler(ModelHandler *model) :
-        _model(model), _commandMode(false), _input() {
+DisplayHandler::DisplayHandler() :
+    _commandMode(false)
+{
 
+}
+
+void DisplayHandler::init(ModelHandler &model) {
+    _model = &model;
 }
 
 void DisplayHandler::launch() {
@@ -65,7 +71,8 @@ void DisplayHandler::launch() {
                     if (_commandMode) {
                         if (event.key.code == sf::Keyboard::Return) {
                             //TODO : send the command to the server
-                            std::cout << _input << std::endl;
+                            _model->registerCommand(_input);
+
                             _input.clear();
                             //update the visual text
                             inputText.setString("> " + _input);

@@ -13,7 +13,10 @@ private:
     NetworkHandler* _network;
 
 public:
-    ConfigHandler(ModelHandler* model, NetworkHandler* network);
+    ConfigHandler();
+    ~ConfigHandler();
+
+    void init(ModelHandler& model, NetworkHandler& network);
 };
 
 

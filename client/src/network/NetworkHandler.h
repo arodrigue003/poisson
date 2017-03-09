@@ -4,6 +4,11 @@
 #include <string>
 #include <thread>
 
+#include <SFML/Network.hpp>
+#include <concurrency/blockingconcurrentqueue.h>
+
+using namespace moodycamel;
+
 class ModelHandler;
 
 class NetworkHandler {
@@ -12,17 +17,24 @@ class NetworkHandler {
 // Attributes
 private:
     ModelHandler* _model;
-    std::thread _thread;
-
+    sf::TcpSocket _socket;
+    std::thread _send_thread;
+    std::thread _receive_thread;
+    bool _is_active;
+    BlockingConcurrentQueue<std::string> _send_queue;
 
 // Methods
 public:
-    NetworkHandler(ModelHandler* model);
+    NetworkHandler();
     ~NetworkHandler();
 
+    void init(ModelHandler& model);
+    void launch(std::string address, unsigned short port);
+    void sendMessage(std::string msg);
+
 private:
-    void launch();
-    void connect(std::string address, unsigned short port);
+    void _send_routine();
+    void _receive_routine();
 };
 
 

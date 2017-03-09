@@ -13,9 +13,10 @@ private:
     NetworkHandler* _network;
 
 public:
-    InputHandler(ModelHandler* model, NetworkHandler* network);
+    InputHandler();
+    ~InputHandler();
 
-
+    void init(ModelHandler& model, NetworkHandler& network);
 };
 
 
