@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(freepoisson_client)
 
 add_subdirectory(fonts)
+add_subdirectory(textures)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 
