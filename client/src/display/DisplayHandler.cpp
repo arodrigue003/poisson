@@ -133,59 +133,59 @@ void DisplayHandler::launch() {
                             //postionning window part (4 split)
                             case sf::Keyboard::Numpad7: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-                                window.setPosition(sf::Vector2i(12, 50));
                                 window.setSize(sf::Vector2u(desktop.width / 2 - 12, desktop.height / 2 - 50));
+                                window.setPosition(sf::Vector2i(12, 50));
                             }
                                 break;
 
                             case sf::Keyboard::Numpad9: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-                                window.setPosition(sf::Vector2i(desktop.width / 2, 50));
                                 window.setSize(sf::Vector2u(desktop.width / 2 - 12, desktop.height / 2 - 50));
+                                window.setPosition(sf::Vector2i(desktop.width / 2, 50));
                             }
                                 break;
 
                             case sf::Keyboard::Numpad1: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-                                window.setPosition(sf::Vector2i(12, desktop.height / 2));
                                 window.setSize(sf::Vector2u(desktop.width / 2 - 12, desktop.height / 2 - 50));
+                                window.setPosition(sf::Vector2i(12, desktop.height / 2));
                             }
                                 break;
 
                             case sf::Keyboard::Numpad3: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-                                window.setPosition(sf::Vector2i(desktop.width / 2, desktop.height / 2));
                                 window.setSize(sf::Vector2u(desktop.width / 2 - 12, desktop.height / 2 - 50));
+                                window.setPosition(sf::Vector2i(desktop.width / 2, desktop.height / 2));
                             }
                                 break;
 
                                 //postionning window part (2 vertical)
                             case sf::Keyboard::Numpad8: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-                                window.setPosition(sf::Vector2i(12, 50));
                                 window.setSize(sf::Vector2u(desktop.width - 24, desktop.height / 2 - 50));
+                                window.setPosition(sf::Vector2i(12, 50));
                             }
                                 break;
 
                             case sf::Keyboard::Numpad2: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-                                window.setPosition(sf::Vector2i(12, desktop.height / 2));
                                 window.setSize(sf::Vector2u(desktop.width - 24, desktop.height / 2 - 50));
+                                window.setPosition(sf::Vector2i(12, desktop.height / 2));
                             }
                                 break;
 
                                 //postionning window part (2 horizontal)
                             case sf::Keyboard::Numpad4: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-                                window.setPosition(sf::Vector2i(12, 50));
                                 window.setSize(sf::Vector2u(desktop.width / 2 - 12, desktop.height - 100));
+                                window.setPosition(sf::Vector2i(12, 50));
                             }
                                 break;
 
                             case sf::Keyboard::Numpad6: {
                                 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-                                window.setPosition(sf::Vector2i(desktop.width / 2, 50));
                                 window.setSize(sf::Vector2u(desktop.width / 2 - 12, desktop.height - 100));
+                                window.setPosition(sf::Vector2i(desktop.width / 2, 50));
                             }
                                 break;
 
