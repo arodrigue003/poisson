@@ -4,6 +4,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <SFML/Graphics.hpp>
+
 class ModelHandler;
 
 class DisplayHandler {
@@ -26,6 +28,9 @@ public:
 
     void init(ModelHandler& model);
     void launch();
+
+    void updateBackgorund(const sf::Texture &backgroundTexture, sf::Sprite &backgroundSprite, unsigned int width,
+                          unsigned int height, const sf::RenderWindow &window, const sf::VideoMode &desktop) const;
 };
 
 
