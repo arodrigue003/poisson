@@ -31,8 +31,6 @@ void NetworkHandler::_send_routine() {
             }
             if (bytes_sent < data.length()) {
                 std::cerr << "Error while sending (partial data)" << std::endl;
-                _is_active = false;
-                //TODO: better management of partial data sending
             }
 
             // for debugging purpose

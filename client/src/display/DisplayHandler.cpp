@@ -19,6 +19,8 @@ void DisplayHandler::init(ModelHandler &model) {
 }
 
 void DisplayHandler::launch() {
+    bool drawFPS = false;
+
     //Font importation
     sf::Font font;
     if (!font.loadFromFile("fonts/SourceCodePro-Regular.ttf")) {
@@ -192,6 +194,10 @@ void DisplayHandler::launch() {
                                 _input = "";
                                 break;
 
+                            case sf::Keyboard::F:
+                                drawFPS = !drawFPS;
+                                break;
+
                             default:
                                 break;
                         }
@@ -249,7 +255,8 @@ void DisplayHandler::launch() {
         //drawing part
         window.clear();
         window.draw(backgroundSprite);
-        window.draw(fps);
+        if (drawFPS)
+            window.draw(fps);
         if (_commandMode) {
             window.draw(inputRect);
             window.draw(inputText);

@@ -8,7 +8,7 @@
 
 class ScrollableOutput {
 private:
-    static unsigned constexpr lineLimit = 5;
+    static unsigned constexpr lineLimit = 7;
 
     sf::RenderWindow &_window;
     std::string _text;
