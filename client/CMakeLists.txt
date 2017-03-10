@@ -15,7 +15,11 @@ set(SOURCE_FILES
         src/config/ConfigHandler.cpp
         src/config/ConfigHandler.h
         src/model/ModelHandler.cpp
-        src/model/ModelHandler.h src/network/NetworkHandler.cpp src/network/NetworkHandler.h src/display/ScrollableOutput.cpp src/display/ScrollableOutput.hpp)
+        src/model/ModelHandler.h
+        src/network/NetworkHandler.cpp
+        src/network/NetworkHandler.h
+        src/display/ScrollableOutput.cpp
+        src/display/ScrollableOutput.hpp)
 
 include_directories(src)
 
