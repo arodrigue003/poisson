@@ -35,8 +35,6 @@ public:
 
     void launch();
 
-    void updateBackgorund(const sf::Texture &backgroundTexture, sf::Sprite &backgroundSprite, unsigned int width,
-                          unsigned int height, const sf::RenderWindow &window, const sf::VideoMode &desktop) const;
 };
 
 
