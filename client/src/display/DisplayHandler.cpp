@@ -20,6 +20,7 @@ void DisplayHandler::init(ModelHandler &model) {
 
 void DisplayHandler::launch() {
     bool drawFPS = false;
+    bool waitingData = false;
 
     //Font importation
     sf::Font font;
@@ -99,11 +100,14 @@ void DisplayHandler::launch() {
 
 
                             case sf::Keyboard::Return:
-                                _model->registerCommand(_input);
+                                if (_input.length() > 0) {
+                                    _model->registerCommand(_input);
 
-                                _input.clear();
-                                //update the visual text
-                                inputText.setString("> " + _input);
+                                    _input.clear();
+                                    //update the visual text
+                                    inputText.setString("> " + _input);
+                                    waitingData = true;
+                                }
                                 break;
 
                             case sf::Keyboard::BackSpace:
@@ -209,6 +213,7 @@ void DisplayHandler::launch() {
                     if (event.key.code == sf::Keyboard::Escape) {
                         _commandMode = !_commandMode;
                         output.setString("");
+                        _input = "";
                         //add the > chevron to show we are in input mode or remove it
                         if (_commandMode)
                             inputText.setString("> ");
@@ -234,11 +239,8 @@ void DisplayHandler::launch() {
                     inputRect.setPosition(18, height - 20 - 15);
                     inputRect.setSize(sf::Vector2f(width - 36, 18));
                     fps.setPosition(width - 70, 5);
-
-
                     output.update();
 
-                    std::cout << width<< ":" << height << std::endl;
                 }
                     break;
 
@@ -252,6 +254,11 @@ void DisplayHandler::launch() {
         sf::Time frameTime = clock.restart();
         int frameMillis = frameTime.asMilliseconds();
         fps.setString(((frameMillis == 0) ? "0" : std::to_string(1000 / frameMillis)) + " FPS");
+
+        std::string data;
+        if (waitingData && _model->getRespond(data)) {
+            output.setString(data);
+        }
 
         //update background view box
         int rectWidth = width * backgroundTexture.getSize().x / desktop.width;

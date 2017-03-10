@@ -76,3 +76,7 @@ void ScrollableOutput::setString(std::string text) {
 void ScrollableOutput::scroll(int lines) {
     setPosition(_cursor+lines);
 }
+
+std::string ScrollableOutput::getString() const {
+    return _text;
+}

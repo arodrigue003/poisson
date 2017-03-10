@@ -50,8 +50,10 @@ void NetworkHandler::_receive_routine() {
         if (_socket.receive(buffer, 100, bytes_received) == sf::Socket::Error) {
             std::cerr << "Error while receiving" << std::endl;
         }
-        if (bytes_received > 0)
+        if (bytes_received > 0) {
             std::cout << "\t<< " << buffer << std::endl;
+            _model->registerRespond(buffer);
+        }
 
         std::this_thread::sleep_for(timespan);
     }

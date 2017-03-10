@@ -29,6 +29,7 @@ public:
     void draw();
 
     void setString(std::string);
+    std::string getString() const;
 
     void scroll(int lines);
 };
