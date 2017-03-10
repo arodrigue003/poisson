@@ -23,7 +23,6 @@ void DisplayHandler::launch() {
     sf::Font font;
     if (!font.loadFromFile("fonts/SourceCodePro-Regular.ttf")) {
         std::cerr << "Could not load the font!" << std::endl << "Exiting..." << std::endl;
-        //TODO : call exit to the model
         return;
     }
 
@@ -46,11 +45,9 @@ void DisplayHandler::launch() {
     fps.setFillColor(sf::Color::White);
 
     //backgroundTexture image
-    //TODO: background image continuity
     sf::Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("textures/background.jpg")) {
         std::cerr << "Could not load the texture!" << std::endl << "Exiting..." << std::endl;
-        //TODO : call exit to the model
         return;
     }
     sf::Sprite backgroundSprite(backgroundTexture);
@@ -77,7 +74,6 @@ void DisplayHandler::launch() {
 
                 case sf::Event::Closed:
                     window.close();
-                    //TODO : call exit to the model
                     break;
 
                     //management of the entered text in order to send it after to the server
@@ -101,7 +97,6 @@ void DisplayHandler::launch() {
 
 
                             case sf::Keyboard::Return:
-                                //TODO : send the command to the server
                                 _model->registerCommand(_input);
 
                                 _input.clear();
@@ -188,7 +183,6 @@ void DisplayHandler::launch() {
 
                             case sf::Keyboard::Q:
                                 window.close();
-                                //TODO : call exit to the model
                                 break;
 
                             case sf::Keyboard::H:

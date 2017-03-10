@@ -4,7 +4,7 @@ project(freepoisson_client)
 add_subdirectory(fonts)
 add_subdirectory(textures)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -O0 -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -O2")
 
 set(SOURCE_FILES
         src/main.cpp
