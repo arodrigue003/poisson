@@ -13,7 +13,7 @@ void ScrollableOutput::setPosition(int pos) {
             pos = _linesNumber - lineLimit;
         else
             pos = 0;
-    _cursor = pos;
+    _cursor = (unsigned) pos;
 
     unsigned lineOccurence = 0;
     unsigned begin = 0;
@@ -53,7 +53,7 @@ void ScrollableOutput::update() {
     unsigned width = _window.getSize().x;
     unsigned height = _window.getSize().y;
 
-    _background.setSize(sf::Vector2f(width / 2 - 18, 20 * lineLimit));
+    _background.setSize(sf::Vector2f(width / 4 * 3 - 18, 20 * lineLimit));
     _background.setPosition(18, height - 20 - 15 - 5 - _background.getSize().y);
     _printedText.setPosition(18+7+2+4, height - 20 -16 - 5 - _background.getSize().y);
     _scrollBar.setSize(sf::Vector2f(7,20 * lineLimit - 4));
@@ -75,4 +75,8 @@ void ScrollableOutput::setString(std::string text) {
 
 void ScrollableOutput::scroll(int lines) {
     setPosition(_cursor+lines);
+}
+
+std::string ScrollableOutput::getString() const {
+    return _text;
 }

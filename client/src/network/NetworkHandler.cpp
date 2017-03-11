@@ -60,6 +60,7 @@ void NetworkHandler::_receiveRoutine() {
         } else if (bytes_received > 0) {
             buffer[bytes_received / sizeof(char)] = '\0';
             std::cout << "\t<< " << buffer << std::endl;
+            _model->registerRespond(buffer);
         }
 
         std::this_thread::sleep_for(timespan);

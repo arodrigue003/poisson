@@ -20,6 +20,7 @@ void DisplayHandler::init(ModelHandler &model) {
 
 void DisplayHandler::launch() {
     bool drawFPS = false;
+    bool waitingData = false;
 
     //Font importation
     sf::Font font;
@@ -99,11 +100,14 @@ void DisplayHandler::launch() {
 
 
                             case sf::Keyboard::Return:
-                                _model->registerCommand(_input);
+                                if (_input.length() > 0) {
+                                    _model->registerCommand(_input);
 
-                                _input.clear();
-                                //update the visual text
-                                inputText.setString("> " + _input);
+                                    _input.clear();
+                                    //update the visual text
+                                    inputText.setString("> " + _input);
+                                    waitingData = true;
+                                }
                                 break;
 
                             case sf::Keyboard::BackSpace:
@@ -120,6 +124,9 @@ void DisplayHandler::launch() {
                                 output.scroll(-1);
                                 break;
 
+                            default:
+                                break;
+
                         }
 
                         //update the visual text
@@ -132,7 +139,6 @@ void DisplayHandler::launch() {
 
                             //portioning window part (4 split)
                             case sf::Keyboard::Numpad7: {
-                                sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
                                 window.setSize(sf::Vector2u(desktop.width / 2 - 12, desktop.height / 2 - 50));
                                 window.setPosition(sf::Vector2i(12, 50));
                             }
@@ -207,6 +213,7 @@ void DisplayHandler::launch() {
                     if (event.key.code == sf::Keyboard::Escape) {
                         _commandMode = !_commandMode;
                         output.setString("");
+                        _input = "";
                         //add the > chevron to show we are in input mode or remove it
                         if (_commandMode)
                             inputText.setString("> ");
@@ -232,11 +239,8 @@ void DisplayHandler::launch() {
                     inputRect.setPosition(18, height - 20 - 15);
                     inputRect.setSize(sf::Vector2f(width - 36, 18));
                     fps.setPosition(width - 70, 5);
-
-
                     output.update();
 
-                    std::cout << width<< ":" << height << std::endl;
                 }
                     break;
 
@@ -250,7 +254,20 @@ void DisplayHandler::launch() {
         sf::Time frameTime = clock.restart();
         int frameMillis = frameTime.asMilliseconds();
         fps.setString(((frameMillis == 0) ? "0" : std::to_string(1000 / frameMillis)) + " FPS");
-        updateBackgorund(backgroundTexture, backgroundSprite, width, height, window, desktop);
+
+        std::string data;
+        if (waitingData && _model->getRespond(data)) {
+            output.setString(data);
+        }
+
+        //update background view box
+        int rectWidth = width * backgroundTexture.getSize().x / desktop.width;
+        int rectHeight = height * backgroundTexture.getSize().y / desktop.height;
+        int rectBeginX = window.getPosition().x * backgroundTexture.getSize().x / desktop.width;
+        int rectBeginY = window.getPosition().y * backgroundTexture.getSize().y / desktop.height;
+        backgroundSprite.setTextureRect(
+                sf::IntRect(rectBeginX, rectBeginY, rectBeginX + rectWidth, rectBeginY + rectHeight));
+        backgroundSprite.setScale(width / (float) rectWidth, height / (float) rectHeight);
 
         //drawing part
         window.clear();
@@ -268,17 +285,3 @@ void DisplayHandler::launch() {
 
 }
 
-void DisplayHandler::updateBackgorund(const sf::Texture &backgroundTexture, sf::Sprite &backgroundSprite, unsigned int width,
-                                 unsigned int height, const sf::RenderWindow &window, const sf::VideoMode &desktop) const {
-
-    int rectWidth = width * backgroundTexture.getSize().x / desktop.width;
-    int rectHeight = height * backgroundTexture.getSize().y / desktop.height;
-    int rectBeginX = window.getPosition().x * backgroundTexture.getSize().x / desktop.width;
-    int rectBeginY = window.getPosition().y * backgroundTexture.getSize().y / desktop.height;
-    backgroundSprite.setTextureRect(sf::IntRect(rectBeginX, rectBeginY, rectBeginX + rectWidth, rectBeginY + rectHeight));
-    backgroundSprite.setScale(width / (float) rectWidth, height / (float) rectHeight);
-
-    /*std::cout << "Window position : " << window.getPosition().x << ":" << window.getPosition().y << std::endl;
-    std::cout << "Windo size      : " << width << ":" << height << std::endl;
-    std::cout << "Rectange sprite : (" << rectBeginX << ":" << rectBeginY << "),(" << rectBeginX + rectWidth << ":" << rectBeginY + rectHeight << ")" << std::endl;*/
-}
