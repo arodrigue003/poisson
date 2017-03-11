@@ -29,8 +29,6 @@ struct controller {
     int max_sock;
     fd_set read_fd_set; //used by select
 
-    char buff[BUFF_SIZE];
-
     struct aquarium aquarium;
 };
 

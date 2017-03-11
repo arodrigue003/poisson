@@ -10,7 +10,7 @@ NetworkHandler::NetworkHandler() {
 }
 
 NetworkHandler::~NetworkHandler() {
-    _is_active = false;
+    _state = NetworkHandler::KILLED;
     _send_thread.join();
     _receive_thread.join();
 }
@@ -19,17 +19,23 @@ void NetworkHandler::sendMessage(std::string msg) {
     _send_queue.enqueue(msg);
 }
 
-void NetworkHandler::_send_routine() {
+void NetworkHandler::_sendRoutine() {
     std::string data;
     std::size_t bytes_sent;
     std::chrono::milliseconds timespan(100);
 
-    while (_is_active) {
-        if (_send_queue.try_dequeue(data)) {
-            if (_socket.send(data.c_str(), data.size(), bytes_sent) == sf::Socket::Error) {
+    while (_state != NetworkHandler::KILLED) {
+        while (_send_queue.try_dequeue(data)) {
+            sf::Socket::Status status = _socket.send(data.c_str(), data.size(), bytes_sent);
+
+            if (status == sf::Socket::Error) {
                 std::cerr << "Error while sending" << std::endl;
-            }
-            if (bytes_sent < data.length()) {
+            } else if (status == sf::Socket::Disconnected) {
+                std::cerr << "Server is disconnected, trying to reconnect" << std::endl;
+                _tryConnect();
+                _send_queue.enqueue(data);
+                continue;
+            } else if (bytes_sent < data.length()) {
                 std::cerr << "Error while sending (partial data)" << std::endl;
             }
 
@@ -41,17 +47,20 @@ void NetworkHandler::_send_routine() {
     }
 }
 
-void NetworkHandler::_receive_routine() {
+void NetworkHandler::_receiveRoutine() {
     char buffer[100];
     std::size_t bytes_received;
     std::chrono::milliseconds timespan(100);
 
-    while (_is_active) {
-        if (_socket.receive(buffer, 100, bytes_received) == sf::Socket::Error) {
+    while (_state != NetworkHandler::KILLED) {
+        sf::Socket::Status status = _socket.receive(buffer, 100, bytes_received);
+
+        if (status == sf::Socket::Error && _state == NetworkHandler::ACTIVE) {
             std::cerr << "Error while receiving" << std::endl;
-        }
-        if (bytes_received > 0)
+        } else if (bytes_received > 0) {
+            buffer[bytes_received / sizeof(char)] = '\0';
             std::cout << "\t<< " << buffer << std::endl;
+        }
 
         std::this_thread::sleep_for(timespan);
     }
@@ -62,27 +71,39 @@ void NetworkHandler::init(ModelHandler &model) {
 }
 
 void NetworkHandler::launch(std::string address, unsigned short port) {
-    _is_active = true;
+    _address = address;
+    _port = port;
+    _tryConnect();
 
-    bool connectionSuccess = false;
-    std::chrono::milliseconds timespan(10000);
+    _socket.setBlocking(false);
 
-    while (!connectionSuccess) {
-        sf::Socket::Status status = _socket.connect(address, port);
+    _send_thread = std::thread(&NetworkHandler::_sendRoutine, this);
+    _receive_thread = std::thread(&NetworkHandler::_receiveRoutine, this);
+}
 
-        if (status != sf::Socket::Done) {
+void NetworkHandler::_tryConnect() {
+    _state = NetworkHandler::INIT;
+    State init_state_ref = NetworkHandler::INIT;
+
+    if (_state.compare_exchange_strong(init_state_ref, NetworkHandler::CONNECTING)) {
+        _socket.disconnect();
+
+        std::cout << "Try connection..." << std::endl;
+        std::chrono::milliseconds timespan(10000);
+
+        while (true) {
+            sf::Socket::Status status = _socket.connect(_address, _port);
+
+            if (status == sf::Socket::Done) {
+                _state = NetworkHandler::ACTIVE;
+                break;
+            }
+
             std::cerr << "Error while connecting" << std::endl;
             std::cerr << "Trying again in 10 secondes" << std::endl;
             std::this_thread::sleep_for(timespan);
         }
-        else
-            connectionSuccess = true;
     }
-
-    _socket.setBlocking(false);
-
-    _send_thread = std::thread(&NetworkHandler::_send_routine, this);
-    _receive_thread = std::thread(&NetworkHandler::_receive_routine, this);
 }
 
 

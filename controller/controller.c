@@ -16,8 +16,10 @@ static void app(void)
     /* the index for the array */
     controller.client_number = 0;
     controller.max_sock = controller.listen_sock;
+
+    int is_active = 1;
     /* an array for all clients */
-    while(1)
+    while(is_active)
     {
         int i = 0;
         FD_ZERO(&controller.read_fd_set);
@@ -73,8 +75,9 @@ static void app(void)
                 /* a client is talking */
                 if(FD_ISSET(controller.clients[i].sock, &controller.read_fd_set))
                 {
+                    char buffer[1024];
                     struct client client = controller.clients[i];
-                    int c = read_client(controller.clients[i].sock, controller.buff);
+                    int c = read_client(controller.clients[i].sock, buffer);
                     /* client disconnected */
                     if(c == 0)
                     {
@@ -84,9 +87,12 @@ static void app(void)
                     }
                     else
                     {
-                        printf("Received message from client %d : %s\n", i, controller.buff);
-                        write_client(client.sock, controller.buff);
-                        // send_message_to_all_clients(controller.clients, controller.client_number, controller.buff);
+                        printf("Received message from client %d : %s\n", i, buffer);
+                        if (strcmp("/stop", buffer) == 0) {
+                            is_active = 0;
+                        } else {
+                            write_client(client.sock, buffer);
+                        }
                     }
                     break;
                 }
@@ -131,6 +137,8 @@ static int init_connection(void)
 {
     int sock;
     CHKERR(sock = socket(AF_INET, SOCK_STREAM, 0));
+    CHKERR(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof(int)))
+
     struct sockaddr_in sin = { 0 };
 
     sin.sin_addr.s_addr = htonl(INADDR_ANY);

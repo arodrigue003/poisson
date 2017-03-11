@@ -3,6 +3,7 @@
 
 #include <string>
 #include <thread>
+#include <atomic>
 
 #include <SFML/Network.hpp>
 #include <concurrency/blockingconcurrentqueue.h>
@@ -14,13 +15,26 @@ class ModelHandler;
 class NetworkHandler {
 // TODO - Complete this class basis
 
+// Enums
+private:
+    enum State {
+        INIT,
+        ACTIVE,
+        CONNECTING,
+        KILLED
+    };
+
 // Attributes
 private:
     ModelHandler* _model;
+
     sf::TcpSocket _socket;
+    std::string _address;
+    unsigned short _port;
+
     std::thread _send_thread;
     std::thread _receive_thread;
-    bool _is_active;
+    std::atomic<State> _state;
     BlockingConcurrentQueue<std::string> _send_queue;
 
 // Methods
@@ -33,8 +47,9 @@ public:
     void sendMessage(std::string msg);
 
 private:
-    void _send_routine();
-    void _receive_routine();
+    void _sendRoutine();
+    void _receiveRoutine();
+    void _tryConnect();
 };
 
 
