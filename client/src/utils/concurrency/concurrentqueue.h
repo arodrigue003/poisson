@@ -1497,7 +1497,7 @@ private:
 			}
 		}
 		
-		// Returns true if the block is now empty (does not apply in explicit context)
+		// Returns true if the block is now empty (does not apply in explicit request)
 		template<InnerQueueContext context>
 		inline bool set_empty(index_t i)
 		{
@@ -1516,7 +1516,7 @@ private:
 		}
 		
 		// Sets multiple contiguous item statuses to 'empty' (assumes no wrapping and count > 0).
-		// Returns true if the block is now empty (does not apply in explicit context).
+		// Returns true if the block is now empty (does not apply in explicit request).
 		template<InnerQueueContext context>
 		inline bool set_many_empty(index_t i, size_t count)
 		{

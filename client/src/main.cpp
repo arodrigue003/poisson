@@ -18,7 +18,6 @@ int main() {
 
     model.init(network);
     display.init(model);
-    network.init(model);
     input.init(model, network);
     config.init(model, network);
 

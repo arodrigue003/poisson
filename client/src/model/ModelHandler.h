@@ -3,7 +3,8 @@
 
 #include <string>
 
-#include <concurrency/blockingconcurrentqueue.h>
+#include <utils/concurrency/blockingconcurrentqueue.h>
+
 using namespace moodycamel;
 
 class NetworkHandler;

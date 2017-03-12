@@ -1,3 +1,5 @@
+#include <iostream>
+#include <network/request/SimpleRequest.h>
 #include "ModelHandler.h"
 #include "network/NetworkHandler.h"
 
@@ -11,7 +13,9 @@ ModelHandler::~ModelHandler() {
 }
 
 void ModelHandler::registerCommand(std::string command) {
-    _network->sendMessage(command);
+    std::cout << "\t>> " << command << std::endl;
+    Ptr<SimpleRequest> request = _network->send(new SimpleRequest(command));
+    std::cout << "\t<< " << request->getResponse() << std::endl << std::endl;
 }
 
 void ModelHandler::registerRespond(std::string respond) {

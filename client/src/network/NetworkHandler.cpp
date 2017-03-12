@@ -5,7 +5,9 @@
 #include "NetworkHandler.h"
 #include "model/ModelHandler.h"
 
-NetworkHandler::NetworkHandler() {
+NetworkHandler::NetworkHandler() :
+    _requestHandler(*this)
+{
 
 }
 
@@ -15,7 +17,18 @@ NetworkHandler::~NetworkHandler() {
     _receive_thread.join();
 }
 
-void NetworkHandler::sendMessage(std::string msg) {
+void NetworkHandler::launch(std::string address, unsigned short port) {
+    _address = address;
+    _port = port;
+    _tryConnect();
+
+    _socket.setBlocking(false);
+
+    _send_thread = std::thread(&NetworkHandler::_sendRoutine, this);
+    _receive_thread = std::thread(&NetworkHandler::_receiveRoutine, this);
+}
+
+void NetworkHandler::_sendMessage(std::string msg) {
     _send_queue.enqueue(msg);
 }
 
@@ -34,13 +47,9 @@ void NetworkHandler::_sendRoutine() {
                 std::cerr << "Server is disconnected, trying to reconnect" << std::endl;
                 _tryConnect();
                 _send_queue.enqueue(data);
-                continue;
             } else if (bytes_sent < data.length()) {
                 std::cerr << "Error while sending (partial data)" << std::endl;
             }
-
-            // for debugging purpose
-            std::cout << "\t>> " << data << std::endl;
         }
 
         std::this_thread::sleep_for(timespan);
@@ -59,27 +68,11 @@ void NetworkHandler::_receiveRoutine() {
             std::cerr << "Error while receiving" << std::endl;
         } else if (bytes_received > 0) {
             buffer[bytes_received / sizeof(char)] = '\0';
-            std::cout << "\t<< " << buffer << std::endl;
-            _model->registerRespond(buffer);
+            _requestHandler.registerResponse(buffer);
         }
 
         std::this_thread::sleep_for(timespan);
     }
-}
-
-void NetworkHandler::init(ModelHandler &model) {
-    _model = &model;
-}
-
-void NetworkHandler::launch(std::string address, unsigned short port) {
-    _address = address;
-    _port = port;
-    _tryConnect();
-
-    _socket.setBlocking(false);
-
-    _send_thread = std::thread(&NetworkHandler::_sendRoutine, this);
-    _receive_thread = std::thread(&NetworkHandler::_receiveRoutine, this);
 }
 
 void NetworkHandler::_tryConnect() {
@@ -106,5 +99,7 @@ void NetworkHandler::_tryConnect() {
         }
     }
 }
+
+
 
 

@@ -6,7 +6,8 @@
 #include <atomic>
 
 #include <SFML/Network.hpp>
-#include <concurrency/blockingconcurrentqueue.h>
+#include <utils/concurrency/blockingconcurrentqueue.h>
+#include "RequestHandler.h"
 
 using namespace moodycamel;
 
@@ -26,7 +27,7 @@ private:
 
 // Attributes
 private:
-    ModelHandler* _model;
+    RequestHandler _requestHandler;
 
     sf::TcpSocket _socket;
     std::string _address;
@@ -42,15 +43,24 @@ public:
     NetworkHandler();
     ~NetworkHandler();
 
-    void init(ModelHandler& model);
     void launch(std::string address, unsigned short port);
-    void sendMessage(std::string msg);
+
+    template<typename T>
+    std::shared_ptr<T> send(T* request);
 
 private:
+    void _sendMessage(std::string message);
     void _sendRoutine();
     void _receiveRoutine();
     void _tryConnect();
 };
 
+template<typename T>
+std::shared_ptr<T> NetworkHandler::send(T* request) {
+    Ptr<T> ptr = Ptr<T>(request);
+    _requestHandler.registerRequest(Ptr<AbstractRequest<typename T::ResponseType>>(ptr));
+    _sendMessage(request->getRequestMessage());
+    return ptr;
+}
 
 #endif //FREEPOISSON_CLIENT_NETWORKHANDLER_H
