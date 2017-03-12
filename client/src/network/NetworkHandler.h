@@ -6,7 +6,10 @@
 #include <atomic>
 
 #include <SFML/Network.hpp>
+
+#include <utils/memory/MemoryTypes.h>
 #include <utils/concurrency/blockingconcurrentqueue.h>
+
 #include "RequestHandler.h"
 
 using namespace moodycamel;
@@ -46,7 +49,8 @@ public:
     void launch(std::string address, unsigned short port);
 
     template<typename T>
-    std::shared_ptr<T> send(T* request);
+    typename std::enable_if<std::is_base_of<AbstractRequest<typename T::ResponseType>, T>::value, Ptr<T>>::type
+    send(T* request);
 
 private:
     void _sendMessage(std::string message);
@@ -56,7 +60,8 @@ private:
 };
 
 template<typename T>
-std::shared_ptr<T> NetworkHandler::send(T* request) {
+typename std::enable_if<std::is_base_of<AbstractRequest<typename T::ResponseType>, T>::value, Ptr<T>>::type
+NetworkHandler::send(T* request) {
     Ptr<T> ptr = Ptr<T>(request);
     _requestHandler.registerRequest(Ptr<AbstractRequest<typename T::ResponseType>>(ptr));
     _sendMessage(request->getRequestMessage());

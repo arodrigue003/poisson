@@ -9,20 +9,24 @@
 #include <chrono>
 
 #include <utils/observer/Observable.h>
+#include <utils/memory/MemoryTypes.h>
+
 #include "AbstractRequest.h"
 
 class NetworkHandler;
 
 class RequestHandler {
 private:
-    class Context : public Observable<std::string> {
+    class Context : public Observable<RequestMessage> {
     private:
         std::chrono::system_clock::time_point _start_time;
 
     public:
         Context(std::chrono::system_clock::time_point start_time);
 
+        void onCancel();
         void onResponse(std::string response);
+        std::chrono::milliseconds elapsedTime(std::chrono::system_clock::time_point now) const;
     };
 
 private:
@@ -34,10 +38,11 @@ private:
 public:
     RequestHandler(NetworkHandler& network);
 
+    void checkRequests();
+    void registerResponse(std::string response);
+
     template<typename TRes>
     void registerRequest(Ptr<AbstractRequest<TRes>> request);
-
-    void registerResponse(std::string response);
 };
 
 template<typename TRes>

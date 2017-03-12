@@ -1,4 +1,3 @@
-
 #include <SFML/Network.hpp>
 #include <iostream>
 
@@ -35,7 +34,6 @@ void NetworkHandler::_sendMessage(std::string msg) {
 void NetworkHandler::_sendRoutine() {
     std::string data;
     std::size_t bytes_sent;
-    std::chrono::milliseconds timespan(100);
 
     while (_state != NetworkHandler::KILLED) {
         while (_send_queue.try_dequeue(data)) {
@@ -52,16 +50,17 @@ void NetworkHandler::_sendRoutine() {
             }
         }
 
-        std::this_thread::sleep_for(timespan);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
 void NetworkHandler::_receiveRoutine() {
     char buffer[100];
     std::size_t bytes_received;
-    std::chrono::milliseconds timespan(100);
 
     while (_state != NetworkHandler::KILLED) {
+        _requestHandler.checkRequests();
+
         sf::Socket::Status status = _socket.receive(buffer, 100, bytes_received);
 
         if (status == sf::Socket::Error && _state == NetworkHandler::ACTIVE) {
@@ -71,7 +70,7 @@ void NetworkHandler::_receiveRoutine() {
             _requestHandler.registerResponse(buffer);
         }
 
-        std::this_thread::sleep_for(timespan);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
@@ -83,7 +82,6 @@ void NetworkHandler::_tryConnect() {
         _socket.disconnect();
 
         std::cout << "Try connection..." << std::endl;
-        std::chrono::milliseconds timespan(10000);
 
         while (true) {
             sf::Socket::Status status = _socket.connect(_address, _port);
@@ -94,12 +92,8 @@ void NetworkHandler::_tryConnect() {
             }
 
             std::cerr << "Error while connecting" << std::endl;
-            std::cerr << "Trying again in 10 secondes" << std::endl;
-            std::this_thread::sleep_for(timespan);
+            std::cerr << "Trying again in 10 seconds" << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(10000));
         }
     }
 }
-
-
-
-

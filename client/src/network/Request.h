@@ -6,11 +6,6 @@
 #define FREEPOISSON_CLIENT_REQUEST_H
 
 
-#include <memory>
-
-template<typename T>
-using Ptr = std::shared_ptr<T>;
-
 template<typename TRes>
 class Request {
 public:

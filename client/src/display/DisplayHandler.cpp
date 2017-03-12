@@ -255,10 +255,11 @@ void DisplayHandler::launch() {
         int frameMillis = frameTime.asMilliseconds();
         fps.setString(((frameMillis == 0) ? "0" : std::to_string(1000 / frameMillis)) + " FPS");
 
-        std::string data;
+        // TODO adapt this code portion
+        /*std::string data;
         if (waitingData && _model->getRespond(data)) {
             output.setString(data);
-        }
+        }*/
 
         //update background view box
         int rectWidth = width * backgroundTexture.getSize().x / desktop.width;
