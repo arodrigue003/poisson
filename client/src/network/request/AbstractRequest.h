@@ -10,7 +10,7 @@
 
 #include <utils/observer/Observer.h>
 
-#include "Request.h"
+#include "network/request/Request.h"
 
 enum RequestStatus {
     SENDING,
@@ -22,6 +22,9 @@ using RequestMessage = std::pair<RequestStatus, std::string>;
 
 template<typename TRes>
 class AbstractRequest : public Request<TRes>, public Observer<RequestMessage> {
+public:
+    using ResponseType = TRes;
+
 private:
     RequestStatus _request_status;
     TRes _response_msg;
@@ -32,13 +35,11 @@ public:
     TRes getResponse() override;
     void notify(RequestMessage message) override;
 
-    std::string getRequestMessage();
-
-    using ResponseType = TRes;
+    std::string getRequestMessage() const;
 
 protected:
-    virtual TRes decodeResponse(std::string response_msg) = 0;
-    virtual std::string encodeRequest() = 0;
+    virtual std::string encodeRequest() const = 0;
+    virtual TRes decodeResponse(std::string response_msg) const = 0;
 };
 
 
@@ -81,7 +82,7 @@ TRes AbstractRequest<TRes>::getResponse() {
 }
 
 template<typename TRes>
-std::string AbstractRequest<TRes>::getRequestMessage() {
+std::string AbstractRequest<TRes>::getRequestMessage() const {
     return encodeRequest();
 }
 

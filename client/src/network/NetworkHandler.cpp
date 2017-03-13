@@ -5,7 +5,8 @@
 #include "model/ModelHandler.h"
 
 NetworkHandler::NetworkHandler() :
-    _requestHandler(*this)
+    _request_counter(0),
+    _response_counter(0)
 {
 
 }
@@ -44,7 +45,6 @@ void NetworkHandler::_sendRoutine() {
             } else if (status == sf::Socket::Disconnected) {
                 std::cerr << "Server is disconnected, trying to reconnect" << std::endl;
                 _tryConnect();
-                _send_queue.enqueue(data);
             } else if (bytes_sent < data.length()) {
                 std::cerr << "Error while sending (partial data)" << std::endl;
             }
@@ -59,7 +59,7 @@ void NetworkHandler::_receiveRoutine() {
     std::size_t bytes_received;
 
     while (_state != NetworkHandler::KILLED) {
-        _requestHandler.checkRequests();
+        _checkNextRequest();
 
         sf::Socket::Status status = _socket.receive(buffer, 100, bytes_received);
 
@@ -67,7 +67,7 @@ void NetworkHandler::_receiveRoutine() {
             std::cerr << "Error while receiving" << std::endl;
         } else if (bytes_received > 0) {
             buffer[bytes_received / sizeof(char)] = '\0';
-            _requestHandler.registerResponse(buffer);
+            _registerResponse(buffer);
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -92,8 +92,44 @@ void NetworkHandler::_tryConnect() {
             }
 
             std::cerr << "Error while connecting" << std::endl;
-            std::cerr << "Trying again in 10 seconds" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+            std::cerr << "Trying again in 5 seconds" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(5));
         }
+
+        std::cout << "Connected!" << std::endl;
     }
+}
+
+void NetworkHandler::_checkNextRequest() {
+    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+
+    if (_response_counter == _request_counter) {
+        return;
+    }
+
+    RequestContext next_context = _pending_requests.at(_response_counter);
+    if (next_context.elapsedTime(now) > std::chrono::seconds(5)) {
+        for (std::pair<unsigned int, RequestContext> pair : _pending_requests) {
+            RequestContext context = pair.second;
+            context.onCancel();
+        }
+
+        _pending_request_write_lock.lock();
+        _pending_requests.clear();
+        _pending_request_write_lock.unlock();
+
+        _response_counter = _request_counter;
+    }
+}
+
+void NetworkHandler::_registerResponse(std::string response) {
+    std::unordered_map<unsigned int, RequestContext>::iterator it = _pending_requests.find(_response_counter);
+    if (it != _pending_requests.end()) {
+        it->second.onResponse(response);
+
+        _pending_request_write_lock.lock();
+        _pending_requests.erase(_response_counter);
+        _pending_request_write_lock.unlock();
+    }
+    _response_counter++;
 }

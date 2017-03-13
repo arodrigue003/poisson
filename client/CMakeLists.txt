@@ -4,7 +4,7 @@ project(freepoisson_client)
 add_subdirectory(fonts)
 add_subdirectory(textures)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -g -O0")
 
 set(SOURCE_FILES
         src/main.cpp
@@ -20,15 +20,13 @@ set(SOURCE_FILES
         src/network/NetworkHandler.h
         src/display/ScrollableOutput.cpp
         src/display/ScrollableOutput.hpp
-        src/network/Request.h
-        src/network/RequestHandler.cpp
-        src/network/RequestHandler.h
+        src/network/request/Request.h
         src/utils/observer/Observable.h
         src/utils/observer/Observer.h
-        src/network/RequestContext.cpp
-        src/network/AbstractRequest.h
+        src/network/request/RequestContext.cpp
+        src/network/request/AbstractRequest.h
         src/network/request/SimpleRequest.cpp
-        src/network/request/SimpleRequest.h src/utils/memory/MemoryTypes.h)
+        src/network/request/SimpleRequest.h src/utils/memory/MemoryTypes.h src/network/request/RequestContext.h)
 
 include_directories(src)
 

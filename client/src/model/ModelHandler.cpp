@@ -16,7 +16,7 @@ ModelHandler::~ModelHandler() {
 
 void ModelHandler::registerCommand(std::string command) {
     std::cout << "\t>> " << command << std::endl;
-    Ptr<SimpleRequest> request = _network->send(new SimpleRequest(command));
+    Ptr<SimpleRequest> request = _network->send(Ptr<SimpleRequest>(new SimpleRequest(command)));
 
     try {
         std::cout << "\t<< " << request->getResponse() << std::endl << std::endl;

@@ -7,7 +7,7 @@
 
 
 #include <string>
-#include <network/AbstractRequest.h>
+#include <network/request/AbstractRequest.h>
 
 class SimpleRequest : public AbstractRequest<std::string> {
 private:
@@ -17,8 +17,8 @@ public:
     SimpleRequest(std::string request_msg);
 
 protected:
-    std::string encodeRequest() override;
-    std::string decodeResponse(std::string response_msg) override;
+    std::string encodeRequest() const override;
+    std::string decodeResponse(std::string response_msg) const override;
 };
 
 

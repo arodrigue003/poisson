@@ -10,10 +10,10 @@ SimpleRequest::SimpleRequest(std::string request_msg) :
 
 }
 
-std::string SimpleRequest::decodeResponse(std::string response_msg) {
+std::string SimpleRequest::decodeResponse(std::string response_msg) const {
     return response_msg;
 }
 
-std::string SimpleRequest::encodeRequest() {
+std::string SimpleRequest::encodeRequest() const {
     return _request_msg;
 }
