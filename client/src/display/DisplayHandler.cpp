@@ -5,6 +5,7 @@
 #include "DisplayHandler.h"
 #include <model/ModelHandler.h>
 #include "ScrollableOutput.hpp"
+#include "Input.hpp"
 
 
 
@@ -29,17 +30,6 @@ void DisplayHandler::launch() {
         return;
     }
 
-    //Input text
-    sf::Text inputText;
-    inputText.setFont(font);
-    inputText.setString("");
-    inputText.setCharacterSize(16);
-    inputText.setFillColor(sf::Color::White);
-
-    //input background
-    sf::RectangleShape inputRect(sf::Vector2f(50, 18));
-    inputRect.setFillColor(sf::Color(0, 0, 0, 180));
-
     //FPS
     sf::Text fps;
     fps.setFont(font);
@@ -54,7 +44,6 @@ void DisplayHandler::launch() {
         return;
     }
     sf::Sprite backgroundSprite(backgroundTexture);
-//    backgroundSprite.setTextureRect(sf::IntRect(20,20,60,60));
 
     //window creation
     unsigned width = 1000;
@@ -64,6 +53,7 @@ void DisplayHandler::launch() {
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 
     ScrollableOutput output(window, font);
+    Input input(window, font);
 
     //main loop
     sf::Clock clock;
@@ -83,11 +73,7 @@ void DisplayHandler::launch() {
                 case sf::Event::TextEntered:
                     if (_commandMode) {
                         char character = static_cast<char>(event.text.unicode);
-                        if (character >= 32 && character != 127) {//don't add special chars to the string
-                            _input.push_back(character);
-                            //update the visual text
-                            inputText.setString("> " + _input);
-                        }
+                        input.addChar(character);
                     }
                     break;
 
@@ -100,20 +86,17 @@ void DisplayHandler::launch() {
 
 
                             case sf::Keyboard::Return:
-                                if (_input.length() > 0) {
-                                    _model->registerCommand(_input);
+                                if (input.getLength() > 0) {
+                                    _model->registerCommand(input.getString());
 
-                                    _input.clear();
-                                    //update the visual text
-                                    inputText.setString("> " + _input);
+                                    input.clear();
+                                    output.toggleHelp(false);
                                     waitingData = true;
                                 }
                                 break;
 
                             case sf::Keyboard::BackSpace:
-                                if (_input.size() > 0)
-                                    //erase last character of the command if command is not empty
-                                    _input.pop_back();
+                                input.removeChar();
                                 break;
 
                             case sf::Keyboard::Down:
@@ -128,9 +111,6 @@ void DisplayHandler::launch() {
                                 break;
 
                         }
-
-                        //update the visual text
-                        inputText.setString("> " + _input);
 
                     } else {
 
@@ -194,10 +174,10 @@ void DisplayHandler::launch() {
                                 break;
 
                             case sf::Keyboard::H:
-                                output.setString(_help);
+                                output.toggleHelp(true);
                                 _commandMode = true;
-                                inputText.setString("> ");
-                                _input = "";
+                                input.clear();
+                                input.disable();
                                 break;
 
                             case sf::Keyboard::F:
@@ -213,12 +193,12 @@ void DisplayHandler::launch() {
                     if (event.key.code == sf::Keyboard::Escape) {
                         _commandMode = !_commandMode;
                         output.setString("");
-                        _input = "";
+                        input.clear();
                         //add the > chevron to show we are in input mode or remove it
-                        if (_commandMode)
-                            inputText.setString("> ");
-                        else
-                            inputText.setString("");
+                        if (!_commandMode) {
+                            output.toggleHelp(false);
+                            input.enable();
+                        }
                     }
                     break;
 
@@ -235,10 +215,8 @@ void DisplayHandler::launch() {
                     window.setView(sf::View(visibleArea));
                     width = window.getSize().x;
                     height = window.getSize().y;
-                    inputText.setPosition(20, height - 20 - 16);
-                    inputRect.setPosition(18, height - 20 - 15);
-                    inputRect.setSize(sf::Vector2f(width - 36, 18));
                     fps.setPosition(width - 70, 5);
+                    input.update();
                     output.update();
 
                 }
@@ -276,8 +254,7 @@ void DisplayHandler::launch() {
         if (drawFPS)
             window.draw(fps);
         if (_commandMode) {
-            window.draw(inputRect);
-            window.draw(inputText);
+            input.draw();
             output.draw();
         }
         window.display();

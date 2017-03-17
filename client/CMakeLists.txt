@@ -26,7 +26,7 @@ set(SOURCE_FILES
         src/network/request/RequestContext.cpp
         src/network/request/AbstractRequest.h
         src/network/request/SimpleRequest.cpp
-        src/network/request/SimpleRequest.h src/utils/memory/MemoryTypes.h src/network/request/RequestContext.h)
+        src/network/request/SimpleRequest.h src/utils/memory/MemoryTypes.h src/network/request/RequestContext.h src/display/Input.cpp src/display/Input.hpp)
 
 include_directories(src)
 
