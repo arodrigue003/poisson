@@ -82,12 +82,23 @@ void ScrollableOutput::setString(std::string text) {
     setPosition(0);
 }
 
-void ScrollableOutput::scroll(int lines) {
-    setPosition(_cursor+lines);
-}
 
 std::string ScrollableOutput::getString() const {
     return _text;
+}
+
+void ScrollableOutput::append(std::string newText) {
+    if (newText != "") {
+        unsigned oldLines = _stringLinesNumber;
+        _text.append("\n").append(newText);
+        _stringLinesNumber = (unsigned) std::count(_text.begin(), _text.end(), '\n') + 1;
+        setPosition(0);
+        std::cout << _cursor << std::endl;
+    }
+}
+
+void ScrollableOutput::scroll(int lines) {
+    setPosition(_cursor+lines);
 }
 
 void ScrollableOutput::toggleHelp(bool mode) {

@@ -242,7 +242,7 @@ void DisplayHandler::launch() {
         if (waitingResponse && request->isResponseReceived()) {
             std::string response = request->getResponse();
             std::cout << "\t<< " << response << std::endl;
-            output.setString(response);
+            output.append(response);
             waitingResponse = false;
         }
 
