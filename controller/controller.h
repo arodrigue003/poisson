@@ -33,6 +33,7 @@ struct controller {
 };
 
 static void app(void);
+void init_controller(struct controller* controller);
 static int init_connection(void);
 static void end_connection(int sock);
 static int read_client(int sock, char *buffer);

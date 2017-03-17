@@ -11,10 +11,13 @@
 static void app(void)
 {
     struct controller controller;
+
+    init_controller(&controller);
+
     printf("Initiating connection socket\n");
     controller.listen_sock = init_connection();
     /* the index for the array */
-    controller.client_number = 0;
+
     controller.max_sock = controller.listen_sock;
 
     int is_active = 1;
@@ -69,6 +72,7 @@ static void app(void)
         }
         else
         {
+            char * fishes_data_str = get_fishes_data_str(&controller.aquarium);
             int i = 0;
             for(i = 0; i < controller.client_number; i++)
             {
@@ -90,11 +94,41 @@ static void app(void)
                         printf("Received message from client %d : %s\n", i, buffer);
                         if (strcmp("/stop", buffer) == 0) {
                             is_active = 0;
-                        } else {
+                        }
+                        else if (strcmp("ping", buffer) == 0) {
+                            printf("Sending fishes list to client %d\n", i);
+                            write_client(client.sock, fishes_data_str);
+                        }
+                        else if (strcmp("hello", buffer) == 0) {
+                            printf("Sending fishes list to client %d\n", i);
+                            write_client(client.sock, fishes_data_str);
+                        }
+                        else if (strcmp("bye", buffer) == 0) {
+                            printf("Client %d disconnected\n", i);
+                            close(controller.clients[i].sock);
+                            remove_client(controller.clients, i, &controller.client_number);
+                        }
+                        else if (strcmp("getFishes", buffer) == 0) {
+                            printf("Sending fishes list to client %d\n", i);
+                            write_client(client.sock, fishes_data_str);
+                        }
+                        else if (strcmp("getFishesContinuously", buffer) == 0) {
+                            printf("Registering client %d to continuously get fishes\n", i);
+                            controller.clients[i].gets_fishes_continuously = 1;
+                        }
+                        else if (strcmp("stopGetFishesContinously", buffer) == 0) {
+                            printf("Unregistering client %d to continuously get fishes\n", i);
+                            controller.clients[i].gets_fishes_continuously = 0;
+                        }
+                        else {
                             write_client(client.sock, buffer);
                         }
                     }
                     break;
+                }
+                if(controller.clients[i].gets_fishes_continuously) {
+                    printf("Continuously sending fishes list to client %d\n", i);
+                    write_client(controller.clients[i].sock, fishes_data_str);
                 }
             }
         }
@@ -102,6 +136,11 @@ static void app(void)
 
     clear_clients(controller.clients, controller.client_number);
     end_connection(controller.listen_sock);
+}
+
+void init_controller(struct controller* controller) {
+    controller->client_number = 0;
+    init_aquarium(&controller->aquarium);
 }
 
 static void clear_clients(struct client *clients, int client_number)

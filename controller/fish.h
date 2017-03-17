@@ -15,7 +15,11 @@ struct fish {
     int target_x, target_y;
     int width, height;
 
+    int move_duration;
+
     enum MOBILITY_MODEL mobility_model;
 };
+
+struct fish* new_fish();
 
 #endif //FREE_POISSON_FISH_H

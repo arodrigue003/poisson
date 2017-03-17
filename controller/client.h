@@ -8,6 +8,7 @@
 struct client
 {
     int sock;
+    int gets_fishes_continuously; // boolean to send fishes list every second
 
 };
 
