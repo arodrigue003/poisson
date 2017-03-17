@@ -5,7 +5,10 @@
 #include "DisplayHandler.h"
 #include <model/ModelHandler.h>
 #include "ScrollableOutput.hpp"
+#include "Input.hpp"
 
+#include "network/request/SimpleRequest.h"
+#include <network/NetworkHandler.h>
 
 
 DisplayHandler::DisplayHandler() :
@@ -14,8 +17,8 @@ DisplayHandler::DisplayHandler() :
 
 }
 
-void DisplayHandler::init(ModelHandler &model) {
-    _model = &model;
+void DisplayHandler::init(NetworkHandler &network) {
+    _network = &network;
 }
 
 void DisplayHandler::launch() {
@@ -28,17 +31,6 @@ void DisplayHandler::launch() {
         std::cerr << "Could not load the font!" << std::endl << "Exiting..." << std::endl;
         return;
     }
-
-    //Input text
-    sf::Text inputText;
-    inputText.setFont(font);
-    inputText.setString("");
-    inputText.setCharacterSize(16);
-    inputText.setFillColor(sf::Color::White);
-
-    //input background
-    sf::RectangleShape inputRect(sf::Vector2f(50, 18));
-    inputRect.setFillColor(sf::Color(0, 0, 0, 180));
 
     //FPS
     sf::Text fps;
@@ -54,7 +46,6 @@ void DisplayHandler::launch() {
         return;
     }
     sf::Sprite backgroundSprite(backgroundTexture);
-//    backgroundSprite.setTextureRect(sf::IntRect(20,20,60,60));
 
     //window creation
     unsigned width = 1000;
@@ -64,6 +55,7 @@ void DisplayHandler::launch() {
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 
     ScrollableOutput output(window, font);
+    Input input(window, font);
 
     //main loop
     sf::Clock clock;
@@ -83,11 +75,7 @@ void DisplayHandler::launch() {
                 case sf::Event::TextEntered:
                     if (_commandMode) {
                         char character = static_cast<char>(event.text.unicode);
-                        if (character >= 32 && character != 127) {//don't add special chars to the string
-                            _input.push_back(character);
-                            //update the visual text
-                            inputText.setString("> " + _input);
-                        }
+                        input.addChar(character);
                     }
                     break;
 
@@ -100,37 +88,42 @@ void DisplayHandler::launch() {
 
 
                             case sf::Keyboard::Return:
-                                if (_input.length() > 0) {
-                                    _model->registerCommand(_input);
+                                if (input.getLength() > 0) {
 
-                                    _input.clear();
-                                    //update the visual text
-                                    inputText.setString("> " + _input);
+                                    // TODO: le faire en non bloquant
+                                    std::string command = input.getString();
+                                    std::cout << "\t>> " << command << std::endl;
+                                    Ptr<SimpleRequest> request = _network->send(Ptr<SimpleRequest>(new SimpleRequest(command)));
+
+                                    try {
+                                        std::cout << "\t<< " << request->getResponse() << std::endl << std::endl;
+                                    } catch (std::string err) {
+                                        std::cerr << err << std::endl;
+                                    }
+
+                                    input.validateString();
+                                    input.clear();
+                                    output.toggleHelp(false);
                                     waitingData = true;
                                 }
                                 break;
 
                             case sf::Keyboard::BackSpace:
-                                if (_input.size() > 0)
-                                    //erase last character of the command if command is not empty
-                                    _input.pop_back();
+                                input.removeChar();
                                 break;
 
                             case sf::Keyboard::Down:
-                                output.scroll(1);
+                                input.goDown();
                                 break;
 
                             case sf::Keyboard::Up:
-                                output.scroll(-1);
+                                input.goUp();
                                 break;
 
                             default:
                                 break;
 
                         }
-
-                        //update the visual text
-                        inputText.setString("> " + _input);
 
                     } else {
 
@@ -194,10 +187,10 @@ void DisplayHandler::launch() {
                                 break;
 
                             case sf::Keyboard::H:
-                                output.setString(_help);
+                                output.toggleHelp(true);
                                 _commandMode = true;
-                                inputText.setString("> ");
-                                _input = "";
+                                input.clear();
+                                input.disable();
                                 break;
 
                             case sf::Keyboard::F:
@@ -213,12 +206,11 @@ void DisplayHandler::launch() {
                     if (event.key.code == sf::Keyboard::Escape) {
                         _commandMode = !_commandMode;
                         output.setString("");
-                        _input = "";
-                        //add the > chevron to show we are in input mode or remove it
-                        if (_commandMode)
-                            inputText.setString("> ");
-                        else
-                            inputText.setString("");
+                        input.clear();
+                        if (!_commandMode) {
+                            output.toggleHelp(false);
+                            input.enable();
+                        }
                     }
                     break;
 
@@ -235,10 +227,8 @@ void DisplayHandler::launch() {
                     window.setView(sf::View(visibleArea));
                     width = window.getSize().x;
                     height = window.getSize().y;
-                    inputText.setPosition(20, height - 20 - 16);
-                    inputRect.setPosition(18, height - 20 - 15);
-                    inputRect.setSize(sf::Vector2f(width - 36, 18));
                     fps.setPosition(width - 70, 5);
+                    input.update();
                     output.update();
 
                 }
@@ -257,7 +247,7 @@ void DisplayHandler::launch() {
 
         // TODO adapt this code portion
         /*std::string data;
-        if (waitingData && _model->getRespond(data)) {
+        if (waitingData && _network->getRespond(data)) {
             output.setString(data);
         }*/
 
@@ -276,8 +266,7 @@ void DisplayHandler::launch() {
         if (drawFPS)
             window.draw(fps);
         if (_commandMode) {
-            window.draw(inputRect);
-            window.draw(inputText);
+            input.draw();
             output.draw();
         }
         window.display();

@@ -17,7 +17,7 @@ int main() {
     ConfigHandler config;
 
     model.init(network);
-    display.init(model);
+    display.init(network);
     input.init(model, network);
     config.init(model, network);
 
