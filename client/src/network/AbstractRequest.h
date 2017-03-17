@@ -10,7 +10,7 @@
 
 #include <utils/observer/Observer.h>
 
-#include "network/request/Request.h"
+#include "Request.h"
 
 enum RequestStatus {
     SENDING,

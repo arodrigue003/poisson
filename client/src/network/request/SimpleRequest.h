@@ -7,7 +7,7 @@
 
 
 #include <string>
-#include <network/request/AbstractRequest.h>
+#include <network/AbstractRequest.h>
 
 class SimpleRequest : public AbstractRequest<std::string> {
 private:

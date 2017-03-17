@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include <network/request/SimpleRequest.h>
 #include <network/NetworkHandler.h>
+#include <network/request/SimpleRequest.h>
 
 #include "ModelHandler.h"
 

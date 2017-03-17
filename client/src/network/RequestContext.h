@@ -8,7 +8,7 @@
 #include <utils/observer/Observable.h>
 #include <utils/memory/MemoryTypes.h>
 
-#include "network/request/AbstractRequest.h"
+#include "AbstractRequest.h"
 
 class RequestContext : public Observable<RequestMessage> {
 private:
