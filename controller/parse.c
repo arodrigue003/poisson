@@ -35,11 +35,13 @@ typedef struct {
 } COMMAND;
 
 COMMAND commands[] = {
-  { "load", com_load, "Chargement de l’aquarium" },
-  { "show", com_show, "Affichage de la topologie" },
-  { "add", com_add, "Ajouter une vue" },
-  { "del", com_del, "Supprimer une vue" },
-  { "save", com_save, "Enregistrer / exporter les donnees de l’aquarium actuelle dans un fichier." },
+  { "load", com_load, "Load the aquarium" },
+  { "show", com_show, "Show how the aquarium is set" },
+  { "add", com_add, "Add a view" },
+  { "del", com_del, "Delete a view" },
+  { "save", com_save, "Save data into a file." },
+  { "help", com_help, "Display this text" },
+  { "?", com_help, "Synonym for `help'" },
   { (char *)NULL, (Function *)NULL, (char *)NULL }
 };
 
@@ -163,18 +165,13 @@ char *stripwhite (char *string)
 
 /* Return non-zero if ARG is a valid argument for CALLER, else print
    an error message and return zero. */
-int valid_argument (char *caller, char *arg)
+int valid_argument (char *caller, int i, char *array[])
 {
-  if (!arg || !*arg)
+  if (!array|| !*array)
     {
       fprintf (stderr, "%s: Argument required.\n", caller);
       return (0);
     }
-  
-  char *array[MAX_ARGS];
-  int i = 0;
-  array[0] = strtok(arg," ");
-  while (array[i]) { array[++i] = strtok(NULL, " ");}
   
   if (strcmp(caller, "load") == 0)
     {
@@ -194,7 +191,6 @@ int valid_argument (char *caller, char *arg)
     {
       if (i != 3)
 	{
-	  printf("%d\n",i);
 	  fprintf (stderr, "%s: Wrong number of arguments given. 3 needed.\n", caller);
 	  return (0);
 	}
@@ -260,21 +256,41 @@ int valid_argument (char *caller, char *arg)
 
 int com_add (char *arg){
   //add view N5 400x400+400+200
-  if (!valid_argument("add", arg))
+  char *array[MAX_ARGS];
+  int i = 0;
+  array[0] = strtok(arg," ");
+  while (array[i]) { array[++i] = strtok(NULL, " ");}
+  
+  if (!valid_argument("add", i, array))
     {
       return 0;
     }
-  struct view *view;
   if (!AQUARIUM)
     {
       fprintf (stderr, "%s: command unavaible. Try to load before adding\n", "add");
       return 0;
     }
-  if (0 && !add_view(view,AQUARIUM))
+  
+  char sub_id[5];
+  int view_id = atoi(memcpy(sub_id,array[0],1));
+  sub_id[5] = '\0';
+  char *view_arg[4];
+  i = 0;
+  view_arg[0] = strtok(arg,"x");
+  while (view_arg[i]) { view_arg[++i] = strtok(NULL, "+");}
+  struct view view;
+  view.view_x = atoi(view_arg[0]);
+  view.view_y = atoi(view_arg[1]);
+  view.view_width = atoi(view_arg[2]);
+  view.view_height = atoi(view_arg[3]);
+  
+
+  if (0 && !add_view(view_id, view,AQUARIUM))
     {
       fprintf (stderr, "%s: command error. View cannot be added.\n", "add");
       return 0;
     }
+  
   printf("\t-> view added\n"); 
   return 1;
 }
@@ -289,23 +305,39 @@ int com_show (){
   return 1;
 } 
 int com_load (char *arg){
+  char *array[MAX_ARGS];
+  int i = 0;
+  array[0] = strtok(arg," ");
+  while (array[i]) { array[++i] = strtok(NULL, " ");}
+ 
+  if (!valid_argument("del", i, array))
+    {
+      return 0;
+    }
+ 
   if (AQUARIUM)
     {
       fprintf (stderr, "%s: Cannot load the aquarium. The aquarium has already been loaded.\n", "load");
       return (0); 
     }
-  if (1 || !load_aquarium(AQUARIUM))
+  if (0 && !load_aquarium(AQUARIUM))
     {
     fprintf (stderr, "%s: Cannot load the aquarium. Check out the config file.\n", "load");
     return (0); 
     }
+  
   printf("\t-> %s loaded ( %d display view ) !\n", arg,(*AQUARIUM).aquarium_views); //
   return 1;
 }
 
 int com_del (char * arg){
   // view N5 deleted
-   if (!valid_argument("del", arg))
+  char *array[MAX_ARGS];
+  int i = 0;
+  array[0] = strtok(arg," ");
+  while (array[i]) { array[++i] = strtok(NULL, " ");}
+ 
+  if (!valid_argument("del", i, array))
     {
       return 0;
     }
@@ -314,13 +346,17 @@ int com_del (char * arg){
       fprintf (stderr, "%s: command error. Retry\n", "del");
       return (0); 
     }
-  if (0 && !del_view(5,AQUARIUM))
+ char sub_id[5];
+ int view_id = atoi(memcpy(sub_id,array[0],1));
+ sub_id[5] = '\0';
+ if (0 && !del_view(view_id, AQUARIUM))
     {
       
       fprintf (stderr, "%s: Cannot delete this view. Retry\n", "del");
       return (0);
     }
-  printf("\t-> view N%d deleted\n",5);
+  
+  printf("\t-> view N%d deleted\n",view_id);
   return 1;
 } 
 int com_save (){
@@ -335,34 +371,39 @@ int com_save (){
   return 1;
 }
 
+int com_help (char *arg)
+{
+  register int i;
+  int printed = 0;
 
+  for (i = 0; commands[i].name; i++)
+    {
+      if (!*arg || (strcmp (arg, commands[i].name) == 0))
+        {
+          printf ("%s\t\t%s.\n", commands[i].name, commands[i].doc);
+          printed++;
+        }
+    }
 
+  if (!printed)
+    {
+      printf ("No commands match `%s'.  Possibilties are:\n", arg);
 
-/****** Implémentation des fonctions de l'aquarium ******/
+      for (i = 0; commands[i].name; i++)
+        {
+          /* Print in six columns. */
+          if (printed == 6)
+            {
+              printed = 0;
+              printf ("\n");
+            }
 
-/*  int load_aquarium(struct aquarium* aquarium); */
-/* int save_aquarium(struct aquarium* aquarium); */
+          printf ("%s\t", commands[i].name);
+          printed++;
+        }
 
-
- /* int del_view(int view, struct aquarium* aquarium){ */
- /*   free((*aquarium).views[view]); */
- /*   (*aquarium).views[view] = NULL; */
- /* } */
-
- /* int add_view(int view_rank, struct view *view, struct aquarium* aquarium){ */
- /*   if (!(*aquarium).views[view_rank]){ */
- /*     fprintf (stderr, "%s:  Cannot add. This view is already used.\n", "add"); */
- /*     return 0; */
- /*   } */
- /*   (*aquarium).views[view_rank] = view; */
- /*   (*aquarium).aquarium_views++; */
- /*   return 1; */
- /* } */
-
- /* int show_aquarium(struct aquarium* aquarium){ */
- /*   printf("%dx%d\n", (*aquarium).aquarium_width,  (*aquarium).aquarium_height); */
- /*   for (int i = 0; i < MAX_VIEWS; i++){ */
- /*     if ( !(*aquarium).views[i]) */
- /*       printf("N%d %dx%d+%d+%d\n", i,  views[i].view_x, views[i].view_y, views[i].view_width,views[i].view_height);  */
- /*   } */
- /* } */
+      if (printed)
+        printf ("\n");
+    }
+  return (0);
+}
