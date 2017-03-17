@@ -4,8 +4,9 @@ Input::Input(sf::RenderWindow &window, sf::Font font) :
         _history(), _input(), _window(window), _font(font), _disabled(false) {
 
     //_history
-    _history.resize(_historySize);
-    _current = _history.begin();
+    _begin = _history.begin();
+    _current = _begin;
+    _end = _history.end();
 
     //Input text
     _inputText.setFont(_font);
@@ -59,34 +60,44 @@ void Input::clear() {
 
 void Input::validateString() {
     _history.push_front(_input);
-    _history.resize(_historySize);
-    _current = _history.begin();
+    if (_history.size() > _historySize)
+        _history.resize(_historySize);
+
+    _begin = _history.begin();
+    _current = _begin;
+    _end = _history.end();
     _last = true;
 }
 
 void Input::goUp() {
-    if (_last) {
-        _input = *_current;
-        _inputText.setString("> " + _input);
-        _last = false;
-    }
-    else if (_current != _history.end()) {
-        _current++;
-        _input = *_current;
-        _inputText.setString("> " + _input);
+    if (!_disabled) {
+        if (_last) {
+            _input = *_current;
+            _inputText.setString("> " + _input);
+            _last = false;
+        } else if (_current != _end) {
+            _current++;
+            if (_current != _end) {
+                _input = *_current;
+                _inputText.setString("> " + _input);
+            }
+        }
     }
 }
 
 void Input::goDown() {
-    if (_current != _history.begin()) {
-        _current--;
-        _input = *_current;
-        _inputText.setString("> " + _input);
-    }
-    else {
-        _input = "";
-        _inputText.setString(">");
-        _last = true;
+    if (!_disabled) {
+        if (_current != _begin) {
+            if (_current == _end)
+                _current--;
+            _current--;
+            _input = *_current;
+            _inputText.setString("> " + _input);
+        } else {
+            _input = "";
+            _inputText.setString(">");
+            _last = true;
+        }
     }
 }
 

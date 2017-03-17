@@ -40,16 +40,14 @@ public:
     ScrollableOutput(sf::RenderWindow &window, sf::Font font);
 
     void update();
-
     void draw();
 
     void setString(std::string);
     std::string getString() const;
+    void append(std::string newText);
 
     void scroll(int lines);
-
     void toggleHelp(bool mode);
-
     void SetPrintedText(int pos, unsigned linesNumber, const std::string& text);
 };
 

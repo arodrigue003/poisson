@@ -10,7 +10,10 @@ class Input {
 private:
     static constexpr unsigned _historySize = 128;
     std::list<std::string> _history;
+    std::list<std::string>::iterator _begin;
     std::list<std::string>::iterator _current;
+    std::list<std::string>::iterator _end;
+
     bool _last = true;
 
     std::string _input;
