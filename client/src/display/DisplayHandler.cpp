@@ -89,6 +89,7 @@ void DisplayHandler::launch() {
                                 if (input.getLength() > 0) {
                                     _model->registerCommand(input.getString());
 
+                                    input.validateString();
                                     input.clear();
                                     output.toggleHelp(false);
                                     waitingData = true;
@@ -100,11 +101,13 @@ void DisplayHandler::launch() {
                                 break;
 
                             case sf::Keyboard::Down:
-                                output.scroll(1);
+                                input.goDown();
+                                //output.scroll(1);
                                 break;
 
                             case sf::Keyboard::Up:
-                                output.scroll(-1);
+                                input.goUp();
+                                //output.scroll(-1);
                                 break;
 
                             default:

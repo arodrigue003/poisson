@@ -1,6 +1,12 @@
 #include "Input.hpp"
 
-Input::Input(sf::RenderWindow &window, sf::Font font) : _input(), _window(window), _font(font), _disabled(false) {
+Input::Input(sf::RenderWindow &window, sf::Font font) :
+        _history(), _input(), _window(window), _font(font), _disabled(false) {
+
+    //_history
+    _history.resize(_historySize);
+    _current = _history.begin();
+
     //Input text
     _inputText.setFont(_font);
     _inputText.setString("");
@@ -50,6 +56,38 @@ void Input::clear() {
     _inputText.setString(">");
 }
 
+void Input::validateString() {
+    _history.push_front(_input);
+    _history.resize(_historySize);
+    _current = _history.begin();
+    _last = true;
+}
+
+void Input::goUp() {
+    if (_last) {
+        _input = *_current;
+        _inputText.setString("> " + _input);
+        _last = false;
+    }
+    else if (_current != _history.end()) {
+        _current++;
+        _input = *_current;
+        _inputText.setString("> " + _input);
+    }
+}
+
+void Input::goDown() {
+    if (_current != _history.begin()) {
+        _current--;
+        _input = *_current;
+        _inputText.setString("> " + _input);
+    }
+    else {
+        _input = "";
+        _inputText.setString(">");
+        _last = true;
+    }
+}
 
 void Input::disable() {
     _disabled = true;
@@ -66,6 +104,9 @@ std::string Input::getString() {
 long Input::getLength() {
     return _input.length();
 }
+
+
+
 
 
 
