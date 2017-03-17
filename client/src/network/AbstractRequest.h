@@ -33,6 +33,7 @@ public:
     AbstractRequest();
 
     TRes getResponse() override;
+    virtual bool isResponseReceived() const override;
     void notify(RequestMessage message) override;
 
     std::string getRequestMessage() const;
@@ -84,6 +85,11 @@ TRes AbstractRequest<TRes>::getResponse() {
 template<typename TRes>
 std::string AbstractRequest<TRes>::getRequestMessage() const {
     return encodeRequest();
+}
+
+template<typename TRes>
+bool AbstractRequest<TRes>::isResponseReceived() const {
+    return _request_status == DONE;
 }
 
 

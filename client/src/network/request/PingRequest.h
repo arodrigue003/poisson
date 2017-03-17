@@ -7,7 +7,7 @@
 
 #include <network/AbstractRequest.h>
 
-class PingRequest : public AbstractRequest<void> {
+class PingRequest : public AbstractRequest<int> {
 private:
     unsigned int _id;
 
@@ -16,7 +16,7 @@ public:
 
 protected:
     virtual std::string encodeRequest() const override;
-    virtual void decodeResponse(std::string response_msg) const override;
+    virtual int decodeResponse(std::string response_msg) const override;
 };
 
 

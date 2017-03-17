@@ -17,6 +17,6 @@ std::string PingRequest::encodeRequest() const {
     return oss.str();
 }
 
-void PingRequest::decodeResponse(std::string response_msg) const {
-    return;
+int PingRequest::decodeResponse(std::string response_msg) const {
+    return 0;
 }
