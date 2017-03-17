@@ -11,6 +11,7 @@ class Request {
 public:
     virtual ~Request() {}
     virtual TRes getResponse() = 0;
+    virtual bool isResponseReceived() const = 0;
 };
 
 #endif //FREEPOISSON_CLIENT_REQUEST_H

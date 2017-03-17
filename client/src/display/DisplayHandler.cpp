@@ -7,6 +7,7 @@
 #include "ScrollableOutput.hpp"
 #include "Input.hpp"
 
+#include "network/request/SimpleRequest.h"
 
 
 DisplayHandler::DisplayHandler() :
@@ -15,13 +16,15 @@ DisplayHandler::DisplayHandler() :
 
 }
 
-void DisplayHandler::init(ModelHandler &model) {
-    _model = &model;
+void DisplayHandler::init(NetworkHandler &network) {
+    _network = &network;
 }
 
 void DisplayHandler::launch() {
     bool drawFPS = false;
-    bool waitingData = false;
+
+    Ptr<SimpleRequest> request;
+    bool waitingResponse = false;
 
     //Font importation
     sf::Font font;
@@ -87,12 +90,15 @@ void DisplayHandler::launch() {
 
                             case sf::Keyboard::Return:
                                 if (input.getLength() > 0) {
-                                    _model->registerCommand(input.getString());
+
+                                    std::string command = input.getString();
+                                    std::cout << "\t>> " << command << std::endl;
+                                    request = _network->send(Ptr<SimpleRequest>(new SimpleRequest(command)));
+                                    waitingResponse = true;
 
                                     input.validateString();
                                     input.clear();
                                     output.toggleHelp(false);
-                                    waitingData = true;
                                 }
                                 break;
 
@@ -233,11 +239,13 @@ void DisplayHandler::launch() {
         int frameMillis = frameTime.asMilliseconds();
         fps.setString(((frameMillis == 0) ? "0" : std::to_string(1000 / frameMillis)) + " FPS");
 
-        // TODO adapt this code portion
-        /*std::string data;
-        if (waitingData && _model->getRespond(data)) {
-            output.setString(data);
-        }*/
+        if (waitingResponse && request->isResponseReceived()) {
+            std::string response = request->getResponse();
+            std::cout << "\t<< " << response << std::endl;
+            output.setString(response);
+            waitingResponse = false;
+        }
+
 
         //update background view box
         int rectWidth = width * backgroundTexture.getSize().x / desktop.width;
