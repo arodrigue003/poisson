@@ -26,7 +26,12 @@ add_library(network
 
 include_directories(src)
 
-add_executable(freepoisson_client src/main.cpp)
+add_executable(freepoisson_client src/main.cpp
+        src/utils/concurrency/blockingconcurrentqueue.h
+        src/utils/concurrency/concurrentqueue.h
+        src/utils/memory/MemoryTypes.h
+        src/utils/observer/Observable.h
+        src/utils/observer/Observer.h)
 target_link_libraries(freepoisson_client config display input model network)
 target_link_libraries(freepoisson_client sfml-graphics sfml-window sfml-network sfml-system)
 

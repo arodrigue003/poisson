@@ -7,6 +7,8 @@
 #include "ScrollableOutput.hpp"
 #include "Input.hpp"
 
+#include "network/request/SimpleRequest.h"
+#include <network/NetworkHandler.h>
 
 
 DisplayHandler::DisplayHandler() :
@@ -15,8 +17,8 @@ DisplayHandler::DisplayHandler() :
 
 }
 
-void DisplayHandler::init(ModelHandler &model) {
-    _model = &model;
+void DisplayHandler::init(NetworkHandler &network) {
+    _network = &network;
 }
 
 void DisplayHandler::launch() {
@@ -87,7 +89,17 @@ void DisplayHandler::launch() {
 
                             case sf::Keyboard::Return:
                                 if (input.getLength() > 0) {
-                                    _model->registerCommand(input.getString());
+
+                                    // TODO: le faire en non bloquant
+                                    std::string command = input.getString();
+                                    std::cout << "\t>> " << command << std::endl;
+                                    Ptr<SimpleRequest> request = _network->send(Ptr<SimpleRequest>(new SimpleRequest(command)));
+
+                                    try {
+                                        std::cout << "\t<< " << request->getResponse() << std::endl << std::endl;
+                                    } catch (std::string err) {
+                                        std::cerr << err << std::endl;
+                                    }
 
                                     input.validateString();
                                     input.clear();
@@ -235,7 +247,7 @@ void DisplayHandler::launch() {
 
         // TODO adapt this code portion
         /*std::string data;
-        if (waitingData && _model->getRespond(data)) {
+        if (waitingData && _network->getRespond(data)) {
             output.setString(data);
         }*/
 

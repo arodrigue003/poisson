@@ -6,19 +6,21 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <network/NetworkHandler.h>
+
 class ModelHandler;
 
 class DisplayHandler {
 // TODO - Complete this class basis
 
 private:
-    ModelHandler *_model;
+    NetworkHandler *_network;
     bool _commandMode;
 
 public:
     DisplayHandler();
 
-    void init(ModelHandler &model);
+    void init(NetworkHandler &model);
 
     void launch();
 
