@@ -195,7 +195,6 @@ void DisplayHandler::launch() {
                         _commandMode = !_commandMode;
                         output.setString("");
                         input.clear();
-                        //add the > chevron to show we are in input mode or remove it
                         if (!_commandMode) {
                             output.toggleHelp(false);
                             input.enable();

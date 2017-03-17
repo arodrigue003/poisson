@@ -15,7 +15,8 @@ add_library(display
 add_library(input
         src/input/InputHandler.cpp)
 add_library(model
-        src/model/ModelHandler.cpp)
+        src/model/ModelHandler.cpp
+        src/model/Poisson.cpp)
 add_library(network
         src/network/NetworkHandler.cpp
         src/network/request/RequestContext.cpp
@@ -25,10 +26,9 @@ add_library(network
 
 include_directories(src)
 
-add_executable(sfmltest src/sfmltest.cpp)
-
 add_executable(freepoisson_client src/main.cpp)
 target_link_libraries(freepoisson_client config display input model network)
 target_link_libraries(freepoisson_client sfml-graphics sfml-window sfml-network sfml-system)
 
+add_executable(sfmltest src/sfmltest.cpp)
 target_link_libraries(sfmltest sfml-graphics sfml-window sfml-system)
