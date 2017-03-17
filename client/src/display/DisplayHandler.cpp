@@ -8,7 +8,6 @@
 #include "Input.hpp"
 
 #include "network/request/SimpleRequest.h"
-#include <network/NetworkHandler.h>
 
 
 DisplayHandler::DisplayHandler() :
@@ -23,7 +22,9 @@ void DisplayHandler::init(NetworkHandler &network) {
 
 void DisplayHandler::launch() {
     bool drawFPS = false;
-    bool waitingData = false;
+
+    Ptr<SimpleRequest> request;
+    bool waitingResponse = false;
 
     //Font importation
     sf::Font font;
@@ -90,21 +91,14 @@ void DisplayHandler::launch() {
                             case sf::Keyboard::Return:
                                 if (input.getLength() > 0) {
 
-                                    // TODO: le faire en non bloquant
                                     std::string command = input.getString();
                                     std::cout << "\t>> " << command << std::endl;
-                                    Ptr<SimpleRequest> request = _network->send(Ptr<SimpleRequest>(new SimpleRequest(command)));
-
-                                    try {
-                                        std::cout << "\t<< " << request->getResponse() << std::endl << std::endl;
-                                    } catch (std::string err) {
-                                        std::cerr << err << std::endl;
-                                    }
+                                    request = _network->send(Ptr<SimpleRequest>(new SimpleRequest(command)));
+                                    waitingResponse = true;
 
                                     input.validateString();
                                     input.clear();
                                     output.toggleHelp(false);
-                                    waitingData = true;
                                 }
                                 break;
 
@@ -245,11 +239,13 @@ void DisplayHandler::launch() {
         int frameMillis = frameTime.asMilliseconds();
         fps.setString(((frameMillis == 0) ? "0" : std::to_string(1000 / frameMillis)) + " FPS");
 
-        // TODO adapt this code portion
-        /*std::string data;
-        if (waitingData && _network->getRespond(data)) {
-            output.setString(data);
-        }*/
+        if (waitingResponse && request->isResponseReceived()) {
+            std::string response = request->getResponse();
+            std::cout << "\t<< " << response << std::endl;
+            output.setString(response);
+            waitingResponse = false;
+        }
+
 
         //update background view box
         int rectWidth = width * backgroundTexture.getSize().x / desktop.width;
