@@ -102,12 +102,10 @@ void DisplayHandler::launch() {
 
                             case sf::Keyboard::Down:
                                 input.goDown();
-                                //output.scroll(1);
                                 break;
 
                             case sf::Keyboard::Up:
                                 input.goUp();
-                                //output.scroll(-1);
                                 break;
 
                             default:

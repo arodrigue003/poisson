@@ -27,7 +27,8 @@ void Input::update() {
 }
 
 void Input::draw() {
-    _inputText.setString("> " + _input);
+    if (!_disabled)
+        _inputText.setString("> " + _input);
 
     _window.draw(_inputBackground);
     _window.draw(_inputText);
@@ -91,6 +92,7 @@ void Input::goDown() {
 
 void Input::disable() {
     _disabled = true;
+    _inputText.setString("Disabled in help mode");
 }
 
 void Input::enable() {
@@ -104,11 +106,3 @@ std::string Input::getString() {
 long Input::getLength() {
     return _input.length();
 }
-
-
-
-
-
-
-
-

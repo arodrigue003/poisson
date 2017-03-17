@@ -11,16 +11,15 @@ private:
     static unsigned constexpr lineLimit = 7;
     const std::string _help = "ESC : toggle modes (current : input)\n"
             "----INPUT MODE----\n"
-            "arrow key or mouse wheel : scroll in the output show\n"
+            "arrow key : scroll in the inout history\n"
+            "mouse wheel : scroll in the output show\n"
             "RET : validate the input\n"
             "BS  : remove the last character\n"
             "---COMMAND MODE---\n"
             "h   : display this help\n"
             "q   : quit\n"
             "f   : toggle FPS\n"
-            "Numpad 1-2-3-4-6-7-8-9 : set window position\n"
-            "test\n"
-            "test";
+            "Numpad 1-2-3-4-6-7-8-9 : set window position\n";
 
 
     sf::RenderWindow &_window;
