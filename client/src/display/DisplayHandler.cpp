@@ -7,7 +7,7 @@
 #include "ScrollableOutput.hpp"
 #include "Input.hpp"
 
-#include "network/request/SimpleRequest.h"
+#include "network/request/impl/SimpleRequest.h"
 
 
 DisplayHandler::DisplayHandler() :
