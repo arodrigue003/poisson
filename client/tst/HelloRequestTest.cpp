@@ -3,7 +3,7 @@
 //
 
 #include <fructose/fructose.h>
-#include <network/request/HelloRequest.h>
+#include <network/request/impl/HelloRequest.h>
 
 class MockHelloRequest : public HelloRequest {
 public:

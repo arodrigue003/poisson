@@ -1,0 +1,10 @@
+//
+// Created by clejacquet on 18/03/17.
+//
+
+#ifndef FREEPOISSON_CLIENT_MESSAGE_H
+#define FREEPOISSON_CLIENT_MESSAGE_H
+
+
+
+#endif //FREEPOISSON_CLIENT_MESSAGE_H

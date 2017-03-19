@@ -6,7 +6,7 @@
 #define FREEPOISSON_CLIENT_HELLOREQUEST_H
 
 
-#include <network/AbstractRequest.h>
+#include <network/request/AbstractRequest.h>
 
 class HelloRequest : public AbstractRequest<int> {
 private:

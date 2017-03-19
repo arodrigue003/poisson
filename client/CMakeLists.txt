@@ -17,26 +17,26 @@ add_library(config
 add_library(display
         src/display/DisplayHandler.cpp
         src/display/Input.cpp
-        src/display/ScrollableOutput.cpp)
+        src/display/ScrollableOutput.cpp src/network/parser/FishInfo.h)
 
 add_library(input
         src/input/InputHandler.cpp)
 
 add_library(model
         src/model/ModelHandler.cpp
-        src/model/Poisson.cpp
+        src/display/FishView.cpp
         src/model/Fish.cpp
         src/model/Transform.cpp)
 
 add_library(network
         src/network/NetworkHandler.cpp
-        src/network/RequestContext.cpp
-        src/network/request/SimpleRequest.cpp
-        src/network/request/HelloRequest.cpp
-        src/network/request/ByeRequest.cpp
-        src/network/request/PingRequest.cpp
-        src/network/AbstractRequest.h
-        src/network/Request.h)
+        src/network/Context.cpp
+        src/network/request/impl/SimpleRequest.cpp
+        src/network/request/impl/HelloRequest.cpp
+        src/network/request/impl/ByeRequest.cpp
+        src/network/request/impl/PingRequest.cpp
+        src/network/request/AbstractRequest.h
+        src/network/request/Request.h src/network/request/impl/AddFishRequest.cpp src/network/request/impl/AddFishRequest.h src/network/connection/Connection.cpp src/network/connection/Connection.h src/network/request/RequestConnection.cpp src/network/request/RequestConnection.h src/network/listener/ListenerConnection.cpp src/network/listener/ListenerConnection.h src/network/listener/Listener.h src/network/listener/AbstractListener.h src/network/Message.h src/network/listener/impl/SimpleListener.cpp src/network/listener/impl/SimpleListener.h src/network/listener/impl/GetFishesContinuouslyListener.cpp src/network/listener/impl/GetFishesContinuouslyListener.h src/network/parser/GetFishesParser.cpp src/network/parser/GetFishesParser.h src/network/request/impl/GetFishesRequest.cpp src/network/request/impl/GetFishesRequest.h)
 
 
 
@@ -51,7 +51,7 @@ target_link_libraries(freepoisson_client config display input model network)
 target_link_libraries(freepoisson_client sfml-graphics sfml-window sfml-network sfml-system)
 
 add_executable(freepoisson_client_test
-        tst/HelloRequestTest.cpp)
+        tst/GetFishesContinouslyListenerTest.cpp)
 
-target_link_libraries(freepoisson_client_test network sfml-network)
+target_link_libraries(freepoisson_client_test network display sfml-window sfml-system sfml-network)
 add_test(freepoisson_client_test freepoisson_client_test)

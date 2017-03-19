@@ -5,7 +5,7 @@
 #ifndef FREEPOISSON_CLIENT_BYEREQUEST_H
 #define FREEPOISSON_CLIENT_BYEREQUEST_H
 
-#include <network/AbstractRequest.h>
+#include <network/request/AbstractRequest.h>
 
 class ByeRequest : public AbstractRequest<int> {
 protected:

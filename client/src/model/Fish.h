@@ -18,8 +18,8 @@ private:
 public:
     Fish(const Transform& transform, std::string name, std::string way_model);
 
-    virtual std::string getName() const;
-
+    Transform getTransform() const;
+    std::string getName() const;
     std::string getWayModel() const;
 };
 

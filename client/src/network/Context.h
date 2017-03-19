@@ -8,14 +8,22 @@
 #include <utils/observer/Observable.h>
 #include <utils/memory/MemoryTypes.h>
 
-#include "AbstractRequest.h"
+#include <string>
+#include <chrono>
 
-class RequestContext : public Observable<RequestMessage> {
+enum MessageCode {
+    RECEIVED,
+    CANCELLED
+};
+
+using Message = std::pair<MessageCode, std::string>;
+
+class Context : public Observable<Message> {
 private:
     std::chrono::system_clock::time_point _start_time;
 
 public:
-    RequestContext(std::chrono::system_clock::time_point start_time);
+    Context(std::chrono::system_clock::time_point start_time);
 
     void onCancel();
     void onResponse(std::string response);

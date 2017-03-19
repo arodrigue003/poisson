@@ -3,6 +3,7 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdint.h>
 
 
 #include "controller.h"
@@ -124,7 +125,6 @@ static void app(void)
                             write_client(client.sock, buffer);
                         }
                     }
-                    break;
                 }
                 if(controller.clients[i].gets_fishes_continuously) {
                     printf("Continuously sending fishes list to client %d\n", i);

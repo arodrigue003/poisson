@@ -25,14 +25,14 @@ public:
 };
 
 class Move {
-    Dot<unsigned> _target; //% according to the newtwork exchange parameters
+    Dot<unsigned> _target; //% according to the network exchange parameters
     unsigned _time;    //seconds
 
 public:
     Move(unsigned x, unsigned y, unsigned time) : _target(x, y), _time(time) {}
 };
 
-class Poisson {
+class FishView {
 private:
     BlockingConcurrentQueue<Move> _movementQueue;
 
@@ -47,7 +47,7 @@ private:
     float _remainingTime;
 
 public:
-    Poisson();
+    FishView();
 
     void addMove(unsigned x, unsigned y, unsigned time);
 };

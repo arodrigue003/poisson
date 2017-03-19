@@ -5,7 +5,7 @@
 #ifndef FREEPOISSON_CLIENT_PINGREQUEST_H
 #define FREEPOISSON_CLIENT_PINGREQUEST_H
 
-#include <network/AbstractRequest.h>
+#include <network/request/AbstractRequest.h>
 
 class PingRequest : public AbstractRequest<int> {
 private:

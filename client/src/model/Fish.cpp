@@ -12,6 +12,10 @@ Fish::Fish(const Transform &transform, std::string name, std::string way_model) 
 
 }
 
+Transform Fish::getTransform() const {
+    return _transform;
+}
+
 std::string Fish::getName() const {
     return _name;
 }

@@ -10,7 +10,7 @@ template<typename TRes>
 class Request {
 public:
     virtual ~Request() {}
-    virtual TRes getResponse() = 0;
+    virtual TRes getResponse() const = 0;
     virtual bool isResponseReceived() const = 0;
 };
 

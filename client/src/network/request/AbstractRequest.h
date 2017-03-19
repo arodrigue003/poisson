@@ -8,33 +8,31 @@
 #include <thread>
 #include <iostream>
 
-#include <utils/observer/Observer.h>
-
-#include "Request.h"
-
-enum RequestStatus {
-    SENDING,
-    DONE,
-    CANCELLED
-};
-
-using RequestMessage = std::pair<RequestStatus, std::string>;
+#include <network/Context.h>
+#include <network/request/Request.h>
 
 template<typename TRes>
-class AbstractRequest : public Request<TRes>, public Observer<RequestMessage> {
+class AbstractRequest : public Request<TRes>, public Observer<Message> {
+private:
+    enum Status {
+        WAITING,
+        DONE,
+        CANCELLED
+    };
+
 public:
     using ResponseType = TRes;
 
 private:
-    RequestStatus _request_status;
+    Status _status;
     TRes _response_msg;
 
 public:
     AbstractRequest();
 
-    TRes getResponse() override;
+    TRes getResponse() const override;
     virtual bool isResponseReceived() const override;
-    void notify(RequestMessage message) override;
+    void notify(Message message) override;
 
     std::string getRequestMessage() const;
 
@@ -46,21 +44,21 @@ protected:
 
 template<typename TRes>
 AbstractRequest<TRes>::AbstractRequest() :
-    _request_status(SENDING)
+    _status(Status::WAITING)
 {
 
 }
 
 template<typename TRes>
-void AbstractRequest<TRes>::notify(RequestMessage requestMessage) {
+void AbstractRequest<TRes>::notify(Message requestMessage) {
     switch (requestMessage.first) {
-        case DONE: {
+        case MessageCode::RECEIVED: {
             _response_msg = decodeResponse(requestMessage.second);
-            _request_status = DONE;
+            _status = Status::DONE;
         } break;
 
-        case CANCELLED: {
-            _request_status = CANCELLED;
+        case MessageCode::CANCELLED: {
+            _status = Status::CANCELLED;
         } break;
 
         default: {
@@ -70,12 +68,12 @@ void AbstractRequest<TRes>::notify(RequestMessage requestMessage) {
 }
 
 template<typename TRes>
-TRes AbstractRequest<TRes>::getResponse() {
-    while (_request_status == SENDING) {
+TRes AbstractRequest<TRes>::getResponse() const {
+    while (_status == Status::WAITING) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    if (_request_status == CANCELLED) {
+    if (_status == Status::CANCELLED) {
         throw std::string("Request cancelled");
     }
 
@@ -89,7 +87,7 @@ std::string AbstractRequest<TRes>::getRequestMessage() const {
 
 template<typename TRes>
 bool AbstractRequest<TRes>::isResponseReceived() const {
-    return _request_status == DONE;
+    return _status == Status::DONE;
 }
 
 
