@@ -89,16 +89,16 @@ void DisplayHandler::launch() {
 
 
                             case sf::Keyboard::Return:
-                                if (input.getLength() > 0) {
+                                if (input.getLength() > 0 && !waitingResponse) {
 
                                     std::string command = input.getString();
                                     std::cout << "\t>> " << command << std::endl;
                                     request = _network->send(Ptr<SimpleRequest>(new SimpleRequest(command)));
                                     waitingResponse = true;
 
+                                    output.append(" > " + command);
                                     input.validateString();
                                     input.clear();
-                                    output.toggleHelp(false);
                                 }
                                 break;
 
@@ -187,6 +187,13 @@ void DisplayHandler::launch() {
                                 input.disable();
                                 break;
 
+                            case sf::Keyboard::F1:
+                                output.toggleHelp(true);
+                                _commandMode = true;
+                                input.clear();
+                                input.disable();
+                                break;
+
                             case sf::Keyboard::F:
                                 drawFPS = !drawFPS;
                                 break;
@@ -199,7 +206,6 @@ void DisplayHandler::launch() {
 
                     if (event.key.code == sf::Keyboard::Escape) {
                         _commandMode = !_commandMode;
-                        output.setString("");
                         input.clear();
                         if (!_commandMode) {
                             output.toggleHelp(false);
@@ -242,7 +248,7 @@ void DisplayHandler::launch() {
         if (waitingResponse && request->isResponseReceived()) {
             std::string response = request->getResponse();
             std::cout << "\t<< " << response << std::endl;
-            output.append(response);
+            output.append(" < " + response);
             waitingResponse = false;
         }
 

@@ -11,15 +11,15 @@ private:
     static unsigned constexpr lineLimit = 7;
     const std::string _help = "ESC : toggle modes (current : input)\n"
             "----INPUT MODE----\n"
-            "arrow key : scroll in the inout history\n"
+            "arrow key   : scroll in the inout history\n"
             "mouse wheel : scroll in the output show\n"
-            "RET : validate the input\n"
-            "BS  : remove the last character\n"
+            "RET         : validate the input\n"
+            "BS          : remove the last character\n"
             "---COMMAND MODE---\n"
-            "h   : display this help\n"
-            "q   : quit\n"
-            "f   : toggle FPS\n"
-            "Numpad 1-2-3-4-6-7-8-9 : set window position\n";
+            "h/F1   : display this help\n"
+            "q      : quit\n"
+            "f      : toggle FPS\n"
+            "Numpad : set window position";
 
 
     sf::RenderWindow &_window;
@@ -42,8 +42,8 @@ public:
     void update();
     void draw();
 
-    void setString(std::string);
-    std::string getString() const;
+    void set(std::string);
+    std::string get() const;
     void append(std::string newText);
 
     void scroll(int lines);
