@@ -8,7 +8,7 @@
 #include "Input.hpp"
 
 #include "network/request/impl/SimpleRequest.h"
-
+#include "network/request/impl/GetFishesRequest.h"
 
 DisplayHandler::DisplayHandler() :
     _commandMode(false)
@@ -24,6 +24,7 @@ void DisplayHandler::launch() {
     bool drawFPS = false;
 
     Ptr<SimpleRequest> request;
+    Ptr<GetFishesRequest> getFishes;
     bool waitingResponse = false;
 
     //Font importation
@@ -93,6 +94,18 @@ void DisplayHandler::launch() {
 
                                     std::string command = input.getString();
                                     std::cout << "\t>> " << command << std::endl;
+
+                                    size_t firstSpace = command.find_first_of(' ');
+                                    std::string firstWord;
+                                    if (firstSpace == std::string::npos)
+                                        firstWord = command;
+                                    else
+                                        firstWord = command.substr(0, firstSpace);
+
+                                    if (firstWord == "getFishes")
+                                        std::cout << "test" << std::endl;
+
+
                                     request = _network->send(Ptr<SimpleRequest>(new SimpleRequest(command)));
                                     waitingResponse = true;
 

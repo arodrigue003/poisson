@@ -36,7 +36,7 @@ public:
     void clear();
 
     void validateString();
-    void goUp(); //TODO: un meilleur nom pour cette fonction qui ramnène le message un pas en arrière dans le temps
+    void goUp();
     void goDown();
 
     void disable();

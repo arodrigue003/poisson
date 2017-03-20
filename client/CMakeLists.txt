@@ -36,7 +36,18 @@ add_library(network
         src/network/request/impl/ByeRequest.cpp
         src/network/request/impl/PingRequest.cpp
         src/network/request/AbstractRequest.h
-        src/network/request/Request.h src/network/request/impl/AddFishRequest.cpp src/network/request/impl/AddFishRequest.h src/network/connection/Connection.cpp src/network/connection/Connection.h src/network/request/RequestConnection.cpp src/network/request/RequestConnection.h src/network/listener/ListenerConnection.cpp src/network/listener/ListenerConnection.h src/network/listener/Listener.h src/network/listener/AbstractListener.h src/network/Message.h src/network/listener/impl/SimpleListener.cpp src/network/listener/impl/SimpleListener.h src/network/listener/impl/GetFishesContinuouslyListener.cpp src/network/listener/impl/GetFishesContinuouslyListener.h src/network/parser/GetFishesParser.cpp src/network/parser/GetFishesParser.h src/network/request/impl/GetFishesRequest.cpp src/network/request/impl/GetFishesRequest.h)
+        src/network/request/Request.h
+        src/network/request/impl/AddFishRequest.cpp
+        src/network/connection/Connection.cpp
+        src/network/request/RequestConnection.cpp
+        src/network/listener/ListenerConnection.cpp
+        src/network/listener/Listener.h
+        src/network/listener/AbstractListener.h
+        src/network/Message.h
+        src/network/listener/impl/SimpleListener.cpp
+        src/network/listener/impl/GetFishesContinuouslyListener.cpp
+        src/network/parser/GetFishesParser.cpp
+        src/network/request/impl/GetFishesRequest.cpp)
 
 
 
