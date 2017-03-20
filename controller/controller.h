@@ -6,6 +6,7 @@
 #define FREE_POISSON_CONTROLLER_H
 
 #include "netinet/in.h"
+#include <sys/select.h>
 
 #include "aquarium.h"
 #include "client.h"
